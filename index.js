@@ -128,7 +128,7 @@ async function generateSpeech(ttsPrompt) {
   await saveWaveFile(fileName, audioBuffer);
 }
 
-async function uploadFile(filePath = "./sample_video.mp4") {
+async function uploadVideoFile(filePath = "./sample_video.mp4") {
   const myfile = await ai.files.upload({
     file: filePath,
     config: { mimeType: "video/mp4" },
@@ -137,16 +137,73 @@ async function uploadFile(filePath = "./sample_video.mp4") {
   return myfile;
 }
 
-async function main() {
-  const videoFile = await uploadFile();
+async function uploadAudioFile(filePath = "./out.wav") {
+  const myfile = await ai.files.upload({
+    file: filePath,
+    config: { mimeType: "audio/wav" },
+  });
 
-  await new Promise(resolve => setTimeout(resolve, 30000));
+  return myfile;
+}
+
+function trimTranscript(transcript) {
+  return {
+    speakers: [...transcript.speakers],
+    segments: transcript.segments.map(({ speaker, text }) => ({
+      speaker,
+      text,
+    })),
+  };
+}
+
+async function detectStamps(toDetect, audioFile) {
+  const prompt = `
+    you are provided with an audio file and a list of stamp phrases to detect within the audio
+    analyze the audio and identify the timestamps where each stamp phrase occurs
+    return the results in a JSON format matching the provided schema
+    the list of stamp phrases to detect are: ${toDetect.toString()}
+`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-pro",
+    contents: createUserContent([
+      createPartFromUri(audioFile.uri, audioFile.mimeType),
+      prompt,
+    ]),
+    config: {
+      responseMimeType: "application/json",
+      responseJsonSchema: z.toJSONSchema(transcriptSchema),
+    },
+  });
+
+  console.log("Raw response text:", response.text);
+
+  const transcript = transcriptSchema.parse(JSON.parse(response.text));
+  console.log(transcript);
+
+  return transcript;
+}
+
+async function main() {
+  const videoFile = await uploadVideoFile();
+
+  await new Promise((resolve) => setTimeout(resolve, 30000));
 
   const transcript = await generateTranscriptAndTranslate(videoFile, "english");
   const ttsPrompt = convertTranscriptForTTS(transcript);
   console.log(ttsPrompt);
 
   await generateSpeech(ttsPrompt);
+
+  const audioFile = await uploadAudioFile();
+
+  await new Promise((resolve) => setTimeout(resolve, 30000));
+
+  const trimmedTranscript = trimTranscript(transcript);
+
+  const detectedStamps = await detectStamps(trimmedTranscript, audioFile);
+
+  console.log("Detected Stamps:", detectedStamps);
 }
 
 main();
