@@ -1,0 +1,105 @@
+{
+	"name": "Node.js & Web Development",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+	
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true,
+			"version": "lts",
+			"nvmVersion": "latest"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest",
+			"ppa": true
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"version": "latest",
+			"moby": true
+		}
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"ms-vscode.vscode-typescript-next",
+				"formulahendry.auto-rename-tag",
+				"bradlc.vscode-tailwindcss",
+				"christian-kohler.path-intellisense",
+				"zignd.html-css-class-completion",
+				"ritwickdey.LiveServer",
+				"pranaygp.vscode-css-peek",
+				"ms-azuretools.vscode-docker",
+				"msjsdiag.vscode-react-native",
+				"eamodio.gitlens",
+				"GitHub.copilot"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll.eslint": "explicit"
+				},
+				"javascript.updateImportsOnFileMove.enabled": "always",
+				"typescript.updateImportsOnFileMove.enabled": "always",
+				"eslint.validate": [
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact"
+				],
+				"files.associations": {
+					"*.css": "css",
+					"*.jsx": "javascriptreact",
+					"*.tsx": "typescriptreact"
+				},
+				"[javascript]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[javascriptreact]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[typescript]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[typescriptreact]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[json]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[html]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[css]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				}
+			}
+		}
+	},
+	"portsAttributes": {
+		"3000": {
+			"label": "React/Next.js Dev Server",
+			"onAutoForward": "notify"
+		},
+		"5173": {
+			"label": "Vite Dev Server",
+			"onAutoForward": "notify"
+		},
+		"8080": {
+			"label": "Web Server",
+			"onAutoForward": "notify"
+		}
+	},
+
+	"postCreateCommand": "npm install -g npm@latest pnpm yarn typescript ts-node nodemon eslint prettier @angular/cli create-react-app vite",
+
+	"remoteUser": "node",
+	
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,readonly,type=bind,consistency=cached"
+	]
+}
