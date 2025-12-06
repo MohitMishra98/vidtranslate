@@ -2,8 +2,13 @@ import z from "zod";
 
 const transcriptSchema = z.object({
   speakers: z
-    .array(z.string())
-    .describe("List of speaker names or identifiers."),
+    .array(
+      z.object({
+        name: z.string().describe("Speaker name or identifier."),
+        gender: z.enum(["male", "female"]).describe("Gender of the speaker."),
+      })
+    )
+    .describe("List of speakers with their names and genders."),
   segments: z
     .array(
       z.object({
