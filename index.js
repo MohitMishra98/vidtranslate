@@ -5,11 +5,14 @@ import {
 } from "@google/genai";
 import { z } from "zod";
 import { transcriptSchema } from "./schema.js";
-import wav from "wav";
+import { HumeClient } from "hume";
+import fs from "fs";
+import ffmpeg from "fluent-ffmpeg";
 
 console.log(z.toJSONSchema(transcriptSchema));
 
 const ai = new GoogleGenAI({});
+const client = new HumeClient({ apiKey: process.env.HUME_API_KEY });
 
 async function generateTranscriptAndTranslate(videoFile, language = "english") {
   const prompt = `
@@ -37,97 +40,6 @@ async function generateTranscriptAndTranslate(videoFile, language = "english") {
   return transcript;
 }
 
-// converting the transacript into specific format to pass it to tts model
-function convertTranscriptForTTS(transcript) {
-  if (!transcript.segments || transcript.segments.length === 0) {
-    return "";
-  }
-
-  // Merge consecutive segments from the same speaker
-  const mergedSegments = [];
-
-  for (const segment of transcript.segments) {
-    const lastSegment = mergedSegments[mergedSegments.length - 1];
-
-    if (lastSegment && lastSegment.speaker === segment.speaker) {
-      // Same speaker - append text to previous segment
-      lastSegment.text += " " + segment.text;
-    } else {
-      // Different speaker - add new segment
-      mergedSegments.push({
-        speaker: segment.speaker,
-        text: segment.text,
-      });
-    }
-  }
-
-  // Build the TTS prompt
-  const speakerList = transcript.speakers.join(" and ");
-  let result = `TTS the following conversation between ${speakerList}:\n`;
-
-  for (const segment of mergedSegments) {
-    result += `         ${segment.speaker}: ${segment.text}\n`;
-  }
-
-  return result;
-}
-
-async function generateSpeech(ttsPrompt) {
-  async function saveWaveFile(
-    filename,
-    pcmData,
-    channels = 1,
-    rate = 24000,
-    sampleWidth = 2
-  ) {
-    return new Promise((resolve, reject) => {
-      const writer = new wav.FileWriter(filename, {
-        channels,
-        sampleRate: rate,
-        bitDepth: sampleWidth * 8,
-      });
-
-      writer.on("finish", resolve);
-      writer.on("error", reject);
-
-      writer.write(pcmData);
-      writer.end();
-    });
-  }
-
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-preview-tts",
-    contents: [{ parts: [{ text: ttsPrompt }] }],
-    config: {
-      responseModalities: ["AUDIO"],
-      speechConfig: {
-        multiSpeakerVoiceConfig: {
-          speakerVoiceConfigs: [
-            {
-              speaker: "Joe",
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName: "Kore" },
-              },
-            },
-            {
-              speaker: "Jane",
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName: "Puck" },
-              },
-            },
-          ],
-        },
-      },
-    },
-  });
-
-  const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-  const audioBuffer = Buffer.from(data, "base64");
-
-  const fileName = "out.wav";
-  await saveWaveFile(fileName, audioBuffer);
-}
-
 async function uploadVideoFile(filePath = "./sample_video.mp4") {
   const myfile = await ai.files.upload({
     file: filePath,
@@ -137,52 +49,83 @@ async function uploadVideoFile(filePath = "./sample_video.mp4") {
   return myfile;
 }
 
-async function uploadAudioFile(filePath = "./out.wav") {
-  const myfile = await ai.files.upload({
-    file: filePath,
-    config: { mimeType: "audio/wav" },
-  });
+async function generateAudio(transcript) {
+  const audioFiles = [];
 
-  return myfile;
+  if (!fs.existsSync("audio_segments")) {
+    fs.mkdirSync("audio_segments");
+  }
+
+  for (const [index, segment] of transcript.segments.entries()) {
+    try {
+      // Using synthesizeJson to get base64 audio
+      const response = await client.tts.synthesizeJson({
+        utterances: [{ text: segment.text }],
+        format: { type: "mp3" },
+      });
+
+      if (
+        response &&
+        response.generations &&
+        response.generations.length > 0 &&
+        response.generations[0].audio
+      ) {
+        const fileName = `audio_segments/segment_${index}.mp3`;
+        fs.writeFileSync(
+          fileName,
+          Buffer.from(response.generations[0].audio, "base64")
+        );
+        audioFiles.push({
+          file: fileName,
+          start: segment.start_time,
+        });
+        console.log(`Generated audio for segment ${index}`);
+      } else {
+        console.error(`No audio generated for segment ${index}`);
+      }
+    } catch (error) {
+      console.error(`Error generating audio for segment ${index}:`, error);
+    }
+  }
+  return audioFiles;
 }
 
-function trimTranscript(transcript) {
-  return {
-    speakers: [...transcript.speakers],
-    segments: transcript.segments.map(({ speaker, text }) => ({
-      speaker,
-      text,
-    })),
-  };
-}
+async function mergeAudio(audioFiles) {
+  return new Promise((resolve, reject) => {
+    if (audioFiles.length === 0) {
+      resolve(null);
+      return;
+    }
 
-async function detectStamps(toDetect, audioFile) {
-  const prompt = `
-    you are provided with an audio file and a list of stamp phrases to detect within the audio
-    analyze the audio and identify the timestamps where each stamp phrase occurs
-    return the results in a JSON format matching the provided schema
-    the list of stamp phrases to detect are: ${toDetect.toString()}
-    make sure to exaclty match the stamp phrases from the provided list
-`;
+    const command = ffmpeg();
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-pro",
-    contents: createUserContent([
-      createPartFromUri(audioFile.uri, audioFile.mimeType),
-      prompt,
-    ]),
-    config: {
-      responseMimeType: "application/json",
-      responseJsonSchema: z.toJSONSchema(transcriptSchema),
-    },
+    audioFiles.forEach((a) => {
+      command.input(a.file);
+    });
+
+    const complexFilter = audioFiles
+      .map((a, i) => {
+        const delay = Math.round(a.start * 1000);
+        return `[${i}:a]adelay=${delay}[a${i}]`;
+      })
+      .join(";");
+
+    const mixInputs = audioFiles.map((_, i) => `[a${i}]`).join("");
+    const filter = `${complexFilter};${mixInputs}amix=inputs=${audioFiles.length}:duration=longest[out]`;
+
+    command
+      .complexFilter(filter)
+      .map("[out]")
+      .save("final_audio.mp3")
+      .on("end", () => {
+        console.log("Audio merge finished: final_audio.mp3");
+        resolve("final_audio.mp3");
+      })
+      .on("error", (err) => {
+        console.error("Error merging audio:", err);
+        reject(err);
+      });
   });
-
-  console.log("Raw response text:", response.text);
-
-  const transcript = transcriptSchema.parse(JSON.parse(response.text));
-  console.log(transcript);
-
-  return transcript;
 }
 
 async function main() {
@@ -191,22 +134,14 @@ async function main() {
   await new Promise((resolve) => setTimeout(resolve, 30000));
 
   const transcript = await generateTranscriptAndTranslate(videoFile, "english");
-  const ttsPrompt = convertTranscriptForTTS(transcript);
-  console.log(ttsPrompt);
 
-  await generateSpeech(ttsPrompt);
+  console.log("Final Transcript:", transcript);
 
-  await new Promise((resolve) => setTimeout(resolve, 30000));
+  console.log("Generating audio segments...");
+  const audioFiles = await generateAudio(transcript);
 
-  const audioFile = await uploadAudioFile();
-
-  await new Promise((resolve) => setTimeout(resolve, 30000));
-
-  const trimmedTranscript = trimTranscript(transcript);
-
-  const detectedStamps = await detectStamps(trimmedTranscript, audioFile);
-
-  console.log("Detected Stamps:", detectedStamps);
+  console.log("Merging audio segments...");
+  await mergeAudio(audioFiles);
 }
 
 main();
