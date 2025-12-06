@@ -162,6 +162,7 @@ async function detectStamps(toDetect, audioFile) {
     analyze the audio and identify the timestamps where each stamp phrase occurs
     return the results in a JSON format matching the provided schema
     the list of stamp phrases to detect are: ${toDetect.toString()}
+    make sure to exaclty match the stamp phrases from the provided list
 `;
 
   const response = await ai.models.generateContent({
@@ -194,6 +195,8 @@ async function main() {
   console.log(ttsPrompt);
 
   await generateSpeech(ttsPrompt);
+
+  await new Promise((resolve) => setTimeout(resolve, 30000));
 
   const audioFile = await uploadAudioFile();
 
