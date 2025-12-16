@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { connect } from "@/db";
 import { getAuthUser } from "@/lib/getAuthUser";
+import { inngest } from "@/lib/inngest";
 
 connect();
 
@@ -42,7 +43,13 @@ export async function POST(req) {
       );
     }
 
-    // TODO: write your inngest logic here to add job to queue
+    // sending the job to inngest
+    await inngest.send({
+      name: "translation/start",
+      data: {
+        ...newJob
+      }
+    })
 
     return NextResponse.json(
       { message: "Translation job created", data: newJob },

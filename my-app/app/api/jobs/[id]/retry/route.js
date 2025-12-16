@@ -42,8 +42,15 @@ export async function POST(req, { params }) {
     job.secure_url = undefined;
     job.public_id = undefined;
 
-    await job.save();
-    // TODO: submit the job to inngest
+    const savedJob = await job.save();
+    
+    // sending the job to inngest
+    await inngest.send({
+      name: "translation/start",
+      data: {
+        ...savedJob,
+      },
+    });
 
     return NextResponse.json(
       { message: "job retry scheduled successfully", data: [] },
