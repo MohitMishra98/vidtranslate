@@ -53,6 +53,7 @@ export async function GET(req) {
 
     const limit = Number(searchParams.get("limit") || "10");
     const page = Number(searchParams.get("page") || "1");
+    const sort = searchParams === "asc" ? 1 : -1;
 
     const skipBy = limit * (page - 1);
 
@@ -61,45 +62,10 @@ export async function GET(req) {
     if (authResult.error) return authResult.error;
     const { user } = authResult;
 
-    // mongo aggregation pipeline to get videos
-    const videos = await Video.aggregate([
-      {
-        $match: {
-          user: user._id,
-        },
-      },
-      {
-        $sort: {
-          createdAt: -1, // latest videos first
-        },
-      },
-      {
-        $skip: skipBy,
-      },
-      {
-        $limit: limit,
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "userDetails",
-        },
-      },
-      {
-        $unwind: "$userDetails",
-      },
-      {
-        $project: {
-          title: 1,
-          secure_url: 1,
-          duration: 1,
-          bytes: 1,
-          createdAt: 1,
-        },
-      },
-    ]);
+    const videos = await Video.find({ user: user._id })
+      .sort({ createdAt: sort })
+      .skip(skipBy)
+      .limit(limit);
 
     if (!videos || videos.length === 0) {
       return NextResponse.json(
