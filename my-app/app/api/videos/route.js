@@ -74,7 +74,10 @@ export async function GET(req) {
       );
     }
 
-    return NextResponse.json({ videos }, { status: 200 });
+    return NextResponse.json(
+      { message: "videos fetched successfully", data: videos },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching videos:", error);
     return NextResponse.json(
