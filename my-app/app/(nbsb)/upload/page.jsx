@@ -1,0 +1,261 @@
+"use client";
+
+import { ArrowLeft, CloudUpload, Pencil, Clapperboard } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+
+function Upload() {
+  // first we need to get the signed uplaod key from BE
+  async function getKeyAndUpload() {
+    try {
+      if (!file || !title || !sourceLanguage) {
+        alert("Please fill in all required fields before uploading.");
+        return;
+      }
+
+      setIsUploading(true);
+      setErrorUploading(false);
+      setSuccessfullyUploaded(false);
+
+      // get signed keys
+      const response = await axios.post("/api/auth/sign-upload");
+      const { signature, timestamp, apiKey, cloudName } = response.data;
+
+      // always provide file in formData format
+      // also make sure to give same folder as given in signature generation
+      // otherwise it will sign mismatch error
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("api_key", apiKey);
+      formData.append("signature", signature);
+      formData.append("timestamp", timestamp);
+      formData.append("folder", "videos");
+
+      // upload to cloudinary
+      const uploadResult = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+        formData,
+      );
+
+      const { public_id, secure_url, resource_type, duration, bytes } =
+        uploadResult.data;
+
+      // now send the request back to server to tell the video has been uploaded
+      const beResponse = await axios.post("/api/videos", {
+        title,
+        public_id,
+        secure_url,
+        resource_type,
+        duration,
+        bytes,
+      });
+
+      setSuccessfullyUploaded(true);
+      setIsUploading(false);
+      setErrorUploading(false);
+    } catch (error) {
+      console.log(error);
+      setIsUploading(false);
+      setErrorUploading(true);
+      setSuccessfullyUploaded(false);
+    }
+  }
+
+  // handling files
+  const inputRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [file, setFile] = useState(null);
+
+  // input values
+  const [title, setTitle] = useState("");
+  const [sourceLanguage, setSourceLanguage] = useState("");
+
+  // handlig uploading states
+  const [isUploading, setIsUploading] = useState(false);
+  const [errorUploading, setErrorUploading] = useState(false);
+  const [successfullyUploaded, setSuccessfullyUploaded] = useState(false);
+
+  // Handle files (drop OR browse)
+  const handleFiles = (files) => {
+    const selectedFile = files[0];
+    if (!selectedFile) return;
+
+    // Validation
+    const allowedTypes = ["video/mp4", "video/quicktime", "video/x-msvideo"];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      alert("Only MP4, MOV, AVI files are allowed");
+      return;
+    }
+
+    setFile(selectedFile);
+  };
+
+  return (
+    <>
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+        <div className="max-w-4xl mx-auto">
+          {/* Page header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Upload Video
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 mt-1">
+                Add new content to your translation queue.
+              </p>
+            </div>
+            <Link
+              className="flex items-center text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+              href="/videos"
+            >
+              <ArrowLeft className="mr-1 text-base"></ArrowLeft>
+              Back to Dashboard
+            </Link>
+          </div>
+
+          {/* Upload form card */}
+          <div className="glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+            <div className="relative z-10 space-y-8">
+              {/* Dropzone */}
+              <input
+                ref={inputRef}
+                type="file"
+                accept="video/mp4,video/quicktime,video/x-msvideo"
+                className="hidden"
+                onChange={(e) => handleFiles(e.target.files)}
+              />
+
+              {/* Drop Zone */}
+              <div
+                onClick={() => inputRef.current.click()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  handleFiles(e.dataTransfer.files);
+                }}
+                className={`
+          group relative w-full h-80 rounded-2xl border-2 border-dashed
+          ${isDragging ? "border-primary bg-primary/10" : "border-slate-300 dark:border-slate-600"}
+          bg-slate-50/50 dark:bg-slate-800/30
+          hover:border-primary/60 transition-all duration-300
+          flex flex-col items-center justify-center cursor-pointer
+        `}
+              >
+                <div className="w-20 h-20 rounded-full bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center mb-4">
+                  <CloudUpload className="text-4xl text-slate-400 group-hover:text-primary" />
+                </div>
+
+                {!file ? (
+                  <>
+                    <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">
+                      Drag and drop video files
+                    </h3>
+                    <p className="text-sm text-slate-500 mt-2">
+                      or{" "}
+                      <span className="text-primary font-semibold underline">
+                        browse files
+                      </span>
+                    </p>
+                    <p className="text-xs text-slate-400 mt-4">
+                      MP4, MOV, AVI up to 2GB
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-lg font-bold text-primary">
+                      {file.name}
+                    </h3>
+                    <p className="text-sm text-slate-500 mt-2">
+                      {(file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </>
+                )}
+              </div>
+
+              {/* Video title input */}
+              <div className="grid gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">
+                    Video Title
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Pencil className="text-slate-400 scale-90"></Pencil>
+                    </div>
+                    <input
+                      className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all shadow-sm"
+                      placeholder="e.g. Q1 Marketing Update"
+                      type="text"
+                      value={title}
+                      onChange={(e) => {
+                        setTitle(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Source language selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">
+                    Source Language
+                  </label>
+                  <select
+                    value={sourceLanguage}
+                    onChange={(e) => {
+                      setSourceLanguage(e.target.value);
+                    }}
+                    className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary text-slate-900 dark:text-white transition-all shadow-sm"
+                  >
+                    <option>English</option>
+                    <option>Spanish</option>
+                    <option>French</option>
+                    <option>German</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 dark:border-slate-700/50">
+                {successfullyUploaded && (
+                  <div className="px-6 py-3 rounded-xl text-white dark:text-white font-medium bg-green-500 dark:hover:bg-green-800 transition-colors">
+                    Upload Successfull
+                  </div>
+                )}
+                {errorUploading && (
+                  <div className="px-6 py-3 rounded-xl text-slate-600 dark:text-slate-300 font-medium bg-red-500 dark:hover:bg-red-800 transition-colors">
+                    Error occured while uploading
+                  </div>
+                )}
+                {!isUploading ? (
+                  <button
+                    onClick={getKeyAndUpload}
+                    className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <CloudUpload />
+                    Start Upload
+                  </button>
+                ) : (
+                  <button className="bg-primary/10 hover:bg-primary/10 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all  hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 cursor-not-allowed">
+                    <CloudUpload />
+                    Uploading...
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Upload;

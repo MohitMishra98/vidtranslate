@@ -18,6 +18,11 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    
+    sourceLanguage: {
+      type: String,
+      required: true,
+    },
 
     status: {
       type: String,

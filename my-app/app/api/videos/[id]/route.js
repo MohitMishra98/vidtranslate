@@ -11,7 +11,8 @@ connect();
 // also delete all the related jobs
 export async function DELETE(req, { params }) {
   try {
-    const { id } = params;
+    console.log("job came")
+    const { id } = await params;
 
     const authResult = await getAuthUser();
     if (authResult.error) return authResult.error;
@@ -51,6 +52,39 @@ export async function DELETE(req, { params }) {
     console.error("Error deleting video:", error);
     return NextResponse.json(
       { error: "Error occurred while deleting the video" },
+      { status: 500 }
+    );
+  }
+}
+
+// get video by id
+export async function GET(req, {params}) {
+  try {
+    console.log("job came")
+    const { id } = await params;
+
+    // protected route
+    const authResult = await getAuthUser();
+    if (authResult.error) return authResult.error;
+    const { user } = authResult;
+
+    const video = await Video.findOne({ user: user._id, _id: id })
+
+    if (!video) {
+      return NextResponse.json(
+        { error: "User videos not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "videos fetched successfully", data: video },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching videos:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

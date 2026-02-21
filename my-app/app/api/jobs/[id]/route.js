@@ -4,13 +4,14 @@ import Job from "@/models/job.model.js";
 import mongoose from "mongoose";
 import { getAuthUser } from "@/lib/getAuthUser";
 import { deleteVideoCloudinary } from "@/lib/deleteVideoCloudinary";
+import Video from "@/models/video.model.js";
 
 connect();
 
 // get job status
 export async function GET(req, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // protected route
     const authResult = await getAuthUser();
@@ -21,7 +22,7 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
 
-    const job = await Job.findById(id);
+    const job = await Job.findById(id).populate("video");
 
     if (!job) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
@@ -44,7 +45,7 @@ export async function GET(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     // get the params
-    const { id } = params;
+    const { id } = await params;
 
     // protected route
     const authResult = await getAuthUser();
@@ -66,6 +67,8 @@ export async function DELETE(req, { params }) {
     }
 
     // delete video from cloudinary
+
+    //TODO: remove this comment
     await deleteVideoCloudinary(job.public_id);
 
     // delete from db

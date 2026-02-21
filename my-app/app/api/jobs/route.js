@@ -12,7 +12,11 @@ connect();
 export async function POST(req) {
   try {
     // get the body
-    const { videoId, targetLanguage } = await req.body;
+    const { videoId,sourceLanguage,targetLanguage } = await req.json();
+
+    console.log("videoId: ", videoId);
+    console.log("sourceLanguage: ", sourceLanguage);
+    console.log("targetLanguage: ", targetLanguage);
 
     // protected route
     const authResult = await getAuthUser();
@@ -21,7 +25,7 @@ export async function POST(req) {
 
     // get the video
     const video = await Video.findOne({
-      _id: new mongoose.Types.ObjectId(videoId),
+      _id: videoId,
       user: user._id,
     });
 
@@ -33,7 +37,7 @@ export async function POST(req) {
       video: video._id,
       user: user._id,
       targetLanguage: targetLanguage,
-      status: "pending",
+      status: "QUEUED",
     });
 
     if (!newJob) {
@@ -56,6 +60,7 @@ export async function POST(req) {
       { status: 201 }
     );
   } catch (error) {
+    console.log(error)
     return NextResponse.json(
       { error: "error starting the translation process" },
       { status: 500 }
@@ -71,6 +76,7 @@ export async function GET(req) {
     const limit = Number(searchParams.get("limit") || 10);
     const page = Number(searchParams.get("page") || 1);
     const sort = searchParams.get("sort") === "asc" ? -1 : 1;
+    const videoId = searchParams.get("videoId") || undefined
 
     const skipBy = limit * (page - 1);
 
@@ -79,8 +85,16 @@ export async function GET(req) {
     if (authResult.error) return authResult.error;
     const { user } = authResult;
 
+    const obj = {
+      user: user._id,
+    }
+
+    if(videoId){
+      obj.video = videoId
+    }
+
     // TODO: create index for efficient search
-    const jobs = await Job.find({ user: user._id })
+    const jobs = await Job.find(obj)
       .sort({ createdAt: sort })
       .skip(skipBy)
       .limit(limit);
