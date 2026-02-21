@@ -36,6 +36,7 @@ export async function POST(req) {
     const newJob = await Job.create({
       video: video._id,
       user: user._id,
+      sourceLanguage: sourceLanguage,
       targetLanguage: targetLanguage,
       status: "QUEUED",
     });
