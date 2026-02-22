@@ -18,6 +18,7 @@ function Jobs({ params }) {
 
   const [updateData, setUpdateData] = useState(false);
   const [jobs, setJobs] = useState([]);
+  const [jobDeletedSuccessfully, setJobDeletedSuccessfully] = useState(false);
 
   const [videoId, setVideoId] = useState("");
   useEffect(() => {
@@ -28,19 +29,45 @@ function Jobs({ params }) {
   }, [params]);
 
   // get all jobs of user related to video
-  useEffect(() => {
-    (async () => {
-      try {
-        const { videoId } = await params;
-        const response = await axios.get(`/api/jobs?videoId=${videoId}`);
-        console.log(response.data);
+  async function getJobs() {
+    try {
+      const { videoId } = await params;
+      const response = await axios.get(`/api/jobs?videoId=${videoId}`);
+      console.log(response.data);
+      setJobs(response.data.data);
+    } catch (error) {
+      console.log("Error occured while fetching jobs", error);
+    }
+  }
 
-        setJobs(response.data.data);
-      } catch (error) {
-        console.log("Error occured while fetching jobs");
+  // delete job
+  async function deleteJob(jobId) {
+    try {
+      const response = await axios.delete(`/api/jobs/${jobId}`);
+      if (response.status === 200) {
+        console.log("Job deleted successfully");
+        const newJobs = jobs.filter((job) => jobId !== job._id);
+        setJobs(newJobs);
+        setJobDeletedSuccessfully(true);
+        setTimeout(() => {
+          setJobDeletedSuccessfully(false);
+        }, 5000);
       }
-    })();
-  }, [videoId, updateData]);
+    } catch (error) {
+      console.log("Error deleting job");
+    }
+  }
+
+  useEffect(() => {
+    // get initial data
+    getJobs();
+
+    // get data at interval
+    const interval = setInterval(() => getJobs(), 10000);
+
+    // this callback runs every time before the useEffect runs or component unmounts
+    return () => clearInterval(interval);
+  }, []);
 
   function getRelativeTime(dateString) {
     const givenDate = new Date(dateString);
@@ -116,25 +143,9 @@ function Jobs({ params }) {
                 relativeTime={getRelativeTime(job.updatedAt)}
                 language={job.targetLanguage}
                 options={{ status: job.status }}
+                deleteJob={deleteJob}
               />
             ))}
-
-            {/* <JobCards
-              status="COMPLETED"
-              relativeTime={"2 hour ago"}
-              language={"French"}
-            />
-            <JobCards
-              status="QUEUED"
-              relativeTime={"2 hour ago"}
-              language={"German"}
-              options={{ status: "Translating" }}
-            />
-            <JobCards
-              status="FAILED"
-              relativeTime={"2 hour ago"}
-              language={"Spanish"}
-            /> */}
           </div>
         </div>
 
@@ -148,6 +159,11 @@ function Jobs({ params }) {
           <Plus className="h-4 w-4" />
           Start New Translation
         </button>
+        {jobDeletedSuccessfully && (
+          <div className="transition duration-1000 fixed right-4 bottom-4 py-2 px-10 bg-green-500/80 text-white text-medium font-bold rounded-xl">
+            Job Successfully Deleted
+          </div>
+        )}
       </div>
     </>
   );
@@ -155,7 +171,15 @@ function Jobs({ params }) {
 
 export default Jobs;
 
-function JobCards({ jobId, videoId, status, language, relativeTime, options }) {
+function JobCards({
+  jobId,
+  videoId,
+  status,
+  language,
+  relativeTime,
+  options,
+  deleteJob,
+}) {
   const router = useRouter();
   return (
     <>
@@ -185,16 +209,7 @@ function JobCards({ jobId, videoId, status, language, relativeTime, options }) {
               type="button"
               onClick={(event) => {
                 event.stopPropagation();
-                (async () => {
-                  try {
-                    const response = await axios.delete(`/api/jobs/${jobId}`);
-                    if (response.status === 200) {
-                      alert("Job deleted successfully");
-                    }
-                  } catch (error) {
-                    console.log("Error deleting job");
-                  }
-                })();
+                deleteJob(jobId);
               }}
               className="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
               aria-label="Delete job"
@@ -228,17 +243,7 @@ function JobCards({ jobId, videoId, status, language, relativeTime, options }) {
             <button
               type="button"
               onClick={(event) => {
-                event.stopPropagation();
-                (async () => {
-                  try {
-                    const response = await axios.delete(`/api/jobs/${jobId}`);
-                    if (response.status === 200) {
-                      alert("Job deleted successfully");
-                    }
-                  } catch (error) {
-                    console.log("Error deleting job");
-                  }
-                })();
+                deleteJob(jobId);
               }}
               className="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
               aria-label="Delete job"
@@ -273,16 +278,7 @@ function JobCards({ jobId, videoId, status, language, relativeTime, options }) {
               type="button"
               onClick={(event) => {
                 event.stopPropagation();
-                (async () => {
-                  try {
-                    const response = await axios.delete(`/api/jobs/${jobId}`);
-                    if (response.status === 200) {
-                      alert("Job deleted successfully");
-                    }
-                  } catch (error) {
-                    console.log("Error deleting job");
-                  }
-                })();
+                deleteJob(jobId);
               }}
               className="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
               aria-label="Delete job"

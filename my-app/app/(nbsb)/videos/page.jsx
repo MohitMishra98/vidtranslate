@@ -9,6 +9,8 @@ import { getCldImageUrl } from "next-cloudinary";
 function Dashboard() {
   const router = useRouter();
   const [videos, setVideos] = useState([]);
+  const [videoDeletedSuccessfully, setVideoDeletedSuccessfully] =
+    useState(false);
 
   function getThumbnailUrl(publicId) {
     return getCldImageUrl({
@@ -47,23 +49,43 @@ function Dashboard() {
     return `${Math.floor(Number(duration / 60))}:${Math.floor(Number(duration)) % 60}`;
   }
 
+  async function getVideos() {
+    try {
+      const videoResponse = await axios.get(
+        "/api/videos?limit=100&page=1&sort=desc",
+      );
+      console.log("testtt", videoResponse.data);
+
+      const response = videoResponse.data.data; // array of videos
+
+      setVideos(response);
+      console.log(response);
+    } catch (error) {
+      console.log("Error fetching videos", error);
+    }
+  }
+
+  async function deleteVideo(videoId) {
+    try {
+      const repsonse = await axios.delete(`/api/videos/${videoId}`);
+
+      if (repsonse.status === 200) {
+        console.log("video successfully deleted");
+        const newVideoList = videos.filter((video) => video._id !== videoId);
+        setVideos(newVideoList);
+        setVideoDeletedSuccessfully(true);
+        setTimeout(() => {
+          setVideoDeletedSuccessfully(false);
+        }, 5000);
+      }
+    } catch (error) {
+      console.log("Error occured", error);
+    }
+  }
+
   useEffect(() => {
     // get the list of video
-    (async () => {
-      try {
-        const videoResponse = await axios.get(
-          "/api/videos?limit=10&page=1&sort=desc",
-        );
-        console.log("testtt",videoResponse.data);
-
-        const response = videoResponse.data.data; // array of videos
-
-        setVideos(response);
-        console.log(response);
-      } catch (error) {
-        console.log("Error fetching videos", error);
-      }
-    })();
+    getVideos();
   }, []);
 
   // const videos = [
@@ -112,6 +134,7 @@ function Dashboard() {
               duration={getDuration(video.duration)}
               thumbnail={getThumbnailUrl(video.public_id)}
               uploadTime={getRelativeTime(video.createdAt)}
+              deleteVideo={deleteVideo}
             />
           ))}
 
@@ -130,6 +153,11 @@ function Dashboard() {
             </p>
           </button>
         </div>
+        {videoDeletedSuccessfully && (
+          <div className="transition duration-1000 fixed right-4 bottom-4 py-2 px-10 bg-green-500/80 text-white text-medium font-bold rounded-xl">
+            Video Successfully Deleted
+          </div>
+        )}
       </div>
     </>
   );
@@ -144,23 +172,9 @@ function VideoCard({
   duration,
   thumbnail,
   uploadTime,
+  deleteVideo,
 }) {
-  const [successfullyDeleted, setSuccessfullyDeleted] = useState(false);
-  const router = useRouter();
-  function deleteVideo(videoId) {
-    (async () => {
-      try {
-        const response = await axios.delete(`/api/videos/${videoId}`);
-        console.log(response.statusText);
-        setSuccessfullyDeleted(true);
-        setTimeout(() => {
-          setSuccessfullyDeleted(false);
-        }, 5000);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }
+    const router = useRouter();
   return (
     <>
       <div
@@ -213,11 +227,11 @@ function VideoCard({
           </span>
         </div>
       </div>
-      {successfullyDeleted && (
+      {/* {successfullyDeleted && (
         <div className="transition duration-1000 fixed right-2 bottom-2 p-2 bg-green-500/80 text-white text-medium font-bold rounded-xl">
           Successfully Deleted
         </div>
-      )}
+      )} */}
     </>
   );
 }
