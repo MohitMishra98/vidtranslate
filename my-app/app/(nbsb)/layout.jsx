@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  Clapperboard,
-  Play,
-  Languages,
-  Search,
-  Sun,
-  Bell,
-  Trash,
-} from "lucide-react";
+import { Clapperboard, Play, Languages, Search, Sun, Bell } from "lucide-react";
 
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
-
-function NavBarAndSideBar({children}) {
+function NavBarAndSideBar({ children }) {
   return (
     <>
       <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -33,7 +24,6 @@ function NavBarAndSideBar({children}) {
             {/* this area */}
             {children}
             {/* this area */}
-
           </main>
         </div>
       </div>
@@ -76,8 +66,6 @@ function Sidebar() {
             More if want
           </Link>
         </nav>
-
-        
       </aside>
     </>
   );
@@ -88,19 +76,7 @@ function Navbar() {
   return (
     <>
       {/* Top header bar with search and user menu */}
-      <header className="h-16 flex items-center justify-between px-8 glass-light dark:glass sticky top-0 z-10 border-b border-slate-200/50 dark:border-slate-800/50">
-        {/* Search bar */}
-        <div className="flex items-center flex-1 max-w-xl">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></Search>
-
-            <input
-              className="w-full bg-slate-100/50 dark:bg-slate-900/50 border-transparent focus:border-primary focus:ring-0 rounded-full py-2 pl-10 pr-4 text-sm transition-all duration-200"
-              placeholder="Search videos..."
-              type="text"
-            />
-          </div>
-        </div>
+      <header className="h-16 flex items-center justify-end px-8 glass-light dark:glass sticky top-0 z-10 border-b border-slate-200/50 dark:border-slate-800/50">
         {/* Header right actions */}
         <div className="flex items-center gap-4">
           {/* TODO: add theme switch buttons */}
@@ -113,11 +89,7 @@ function Navbar() {
             <Sun className="dark:hidden"></Sun>
             <Sun className="hidden dark:block"></Sun>
           </button>
-          {/* Notification button with badge */}
-          <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full relative transition-colors">
-            <Bell></Bell>
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
-          </button>
+
           {/* Divider */}
           <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-800 mx-1"></div>
           {/* User profile section */}
