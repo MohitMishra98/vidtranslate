@@ -105,7 +105,7 @@ function Navbar() {
             <img
               alt="User avatar"
               className="h-9 w-9 rounded-full border-2 border-primary/20"
-              src={user?.profileImageUrl}
+              src={user?.imageUrl}
             />
           </div>
         </div>
