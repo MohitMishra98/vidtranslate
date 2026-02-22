@@ -10,17 +10,23 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.2",
+    "@deepgram/sdk": "^4.11.3",
+    "@google/genai": "^1.42.0",
+    "@gradio/client": "^2.0.4",
     "@mui/icons-material": "^7.3.7",
+    "@types/fluent-ffmpeg": "^2.1.28",
     "axios": "^1.13.4",
     "cloudinary": "^2.8.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "inngest": "^3.47.0",
     "lucide-react": "^0.563.0",
     "mongoose": "^9.0.1",
     "next": "16.0.10",
     "next-cloudinary": "^6.17.5",
     "react": "19.2.1",
-    "react-dom": "19.2.1"
+    "react-dom": "19.2.1",
+    "wav": "^1.0.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.11",

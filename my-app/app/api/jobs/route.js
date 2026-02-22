@@ -52,7 +52,10 @@ export async function POST(req) {
     await inngest.send({
       name: "translation/start",
       data: {
-        ...newJob
+        _id: newJob._id,
+        video: newJob.video,
+        sourceLanguage: sourceLanguage,
+        targetLanguage: targetLanguage,
       }
     })
 

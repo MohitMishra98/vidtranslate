@@ -18,7 +18,7 @@ const outputSchema = z.object({
 });
 
 async function getTranslatedTranscript(
-  inputTranscriptFun,
+  inputTranscriptArr,
   sourceLanguage,
   targetLanguage,
 ) {
@@ -29,8 +29,7 @@ make sure to properly translate text while and use localised idioms and phrases 
 do not make the translated language to complex and maintain day to day style
 `;
 
-  const fileTranscript = inputTranscriptFun;
-  const inputTranscript = { transcript: fileTranscript.transcript };
+  const inputTranscript = { transcript: inputTranscriptArr };
   const inputTranscriptString = JSON.stringify(inputTranscript);
 
   console.log(inputTranscriptString);
@@ -53,9 +52,11 @@ do not make the translated language to complex and maintain day to day style
   const transcript = outputSchema.parse(JSON.parse(response.text));
   console.log(transcript);
 
-  fileTranscript.transcript = transcript.transcript;
-
-  return fileTranscript;
+  // Merge translated text back into original entries, preserving timing and speaker info
+  return inputTranscriptArr.map((entry, i) => ({
+    ...entry,
+    text: transcript.transcript[i]?.text ?? entry.text,
+  }));
 }
 
 export default getTranslatedTranscript;

@@ -9,6 +9,7 @@ import generateAudio from "@/lib/translation/speaking";
 import mergeAudioAndVideo from "@/lib/mergeAudioVideo";
 import uploadVideoToCloudinary from "@/lib/uploadVideoToCloudinary";
 import fs from "fs";
+import path from "path";
 
 export const startTranslation = inngest.createFunction(
   { id: "start-translation" },
@@ -16,12 +17,24 @@ export const startTranslation = inngest.createFunction(
   async ({ event, step }) => {
     console.log("started the transaltion job");
 
+    // Ensure temp directories exist
+    fs.mkdirSync(path.resolve(process.cwd(), "tempFiles/videos"), {
+      recursive: true,
+    });
+    fs.mkdirSync(path.resolve(process.cwd(), "tempFiles/audios"), {
+      recursive: true,
+    });
+
     // get the data from db
     console.log("getting data from db");
+    console.log("job data: ", event.data);
     const videoData = await step.run("get-data-db", async () => {
+      console.log("job data: ", event.data);
       const video = await Video.findById(event.data.video);
       return video;
     });
+
+    console.log("video data: ", videoData);
 
     // download the video to local storage
     console.log("downlaoding the video");
@@ -108,10 +121,19 @@ export const startTranslation = inngest.createFunction(
     // cleanup all the files
     console.log("cleaning up temp files");
     await step.run("cleanup-files", async () => {
-      fs.unlinkSync(`tempFiles/videos/video${event.data._id}.mp4`);
-      fs.unlinkSync(`tempFiles/audios/audio${event.data._id}.mp3`);
-      fs.unlinkSync(`tempFiles/audios/translated-audio${event.data._id}.mp3`);
-      fs.unlinkSync(`tempFiles/videos/generated-video${event.data._id}.mp4`);
+      const filesToClean = [
+        `tempFiles/videos/video${event.data._id}.mp4`,
+        `tempFiles/audios/audio${event.data._id}.mp3`,
+        `tempFiles/audios/translated-audio${event.data._id}.mp3`,
+        `tempFiles/videos/generated-video${event.data._id}.mp4`,
+      ];
+      for (const file of filesToClean) {
+        try {
+          fs.unlinkSync(path.resolve(process.cwd(), file));
+        } catch (err) {
+          console.warn(`Could not delete ${file}: ${err.message}`);
+        }
+      }
     });
 
     console.log("translation completed");

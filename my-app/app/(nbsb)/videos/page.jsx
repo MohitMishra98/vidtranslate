@@ -55,7 +55,7 @@ function Dashboard() {
     (async () => {
       try {
         const videoResponse = await axios.get(
-          "/api/videos?limit=5&page=1&sort=desc",
+          "/api/videos?limit=10&page=1&sort=desc",
         );
         console.log(videoResponse.data);
         // process and convert the response to videos array to pass into component

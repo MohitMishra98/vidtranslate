@@ -1,6 +1,6 @@
-import {exec} from 'child_process';
-import path from 'path';
-import fs from 'fs';
+import { exec } from "child_process";
+import path from "path";
+import fs from "fs";
 
 async function mergeAudioAndVideo(videoPath, audioPath, outputPath) {
   // 1. Resolve absolute paths for all files
@@ -21,7 +21,9 @@ async function mergeAudioAndVideo(videoPath, audioPath, outputPath) {
   const command = `ffmpeg -i "${resolvedVideo}" -i "${resolvedAudio}" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 -shortest "${resolvedOutput}"`;
 
   return new Promise((resolve, reject) => {
-    console.log(`Starting merge process...\nVideo: ${resolvedVideo}\nAudio: ${resolvedAudio}\nOutput: ${resolvedOutput}`);
+    console.log(
+      `Starting merge process...\nVideo: ${resolvedVideo}\nAudio: ${resolvedAudio}\nOutput: ${resolvedOutput}`,
+    );
 
     // 3. Execute the command
     exec(command, (error, stdout, stderr) => {
@@ -36,4 +38,4 @@ async function mergeAudioAndVideo(videoPath, audioPath, outputPath) {
   });
 }
 
-export default mergeAudioAndVideo
+export default mergeAudioAndVideo;

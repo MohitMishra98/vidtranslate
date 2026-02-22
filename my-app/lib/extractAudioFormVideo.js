@@ -1,6 +1,6 @@
 import { exec } from "child_process";
-import path from "path"
-import fs from "fs"
+import path from "path";
+import fs from "fs";
 
 async function extractAudioFromVideo(videoPath, audioPath) {
   // 1. Resolve absolute paths to avoid any "file not found" headaches
@@ -17,7 +17,9 @@ async function extractAudioFromVideo(videoPath, audioPath) {
   const command = `ffmpeg -i "${resolvedVideo}" -q:a 0 -map a "${resolvedAudio}"`;
 
   return new Promise((resolve, reject) => {
-    console.log(`Starting extraction...\nVideo: ${resolvedVideo}\nTarget: ${resolvedAudio}`);
+    console.log(
+      `Starting extraction...\nVideo: ${resolvedVideo}\nTarget: ${resolvedAudio}`,
+    );
 
     // 3. Execute the command in the system's shell
     exec(command, (error, stdout, stderr) => {
@@ -34,4 +36,4 @@ async function extractAudioFromVideo(videoPath, audioPath) {
   });
 }
 
-export default extractAudioFromVideo
+export default extractAudioFromVideo;

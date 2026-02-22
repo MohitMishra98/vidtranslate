@@ -51,7 +51,8 @@ function CreateJob({ params }) {
 
       const response = await axios.post("/api/jobs", {
         videoId: videoId,
-        targetLanguage: targetLanguage
+        targetLanguage: targetLanguage,
+        sourceLanguage: sourceLanguage
       })
 
       console.log(response)
@@ -140,6 +141,13 @@ function CreateJob({ params }) {
                       <option>Spanish (ES)</option>
                       <option>French (FR)</option>
                       <option>German (DE)</option>
+                      <option>Hindi (IN)</option>
+                      <option>Chinese (CN)</option>
+                      <option>Korean (KR)</option>
+                      <option>Russian (RU)</option>
+                      <option>Portuguese (BR)</option>
+                      <option>Italian (IT)</option>
+                      <option>Japanese (JP)</option>
                     </select>
                   </div>
                 </div>
@@ -159,12 +167,17 @@ function CreateJob({ params }) {
                       }}
                       className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-100 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all cursor-pointer"
                     >
-                      <option>Spanish (Mexican)</option>
                       <option>English (US)</option>
+                      <option>Spanish (ES)</option>
                       <option>French (FR)</option>
                       <option>German (DE)</option>
-                      <option>Japanese (JP)</option>
+                      <option>Hindi (IN)</option>
+                      <option>Chinese (CN)</option>
+                      <option>Korean (KR)</option>
+                      <option>Russian (RU)</option>
                       <option>Portuguese (BR)</option>
+                      <option>Italian (IT)</option>
+                      <option>Japanese (JP)</option>
                     </select>
                   </div>
                 </div>

@@ -3,6 +3,7 @@ import path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { Client } from "@gradio/client";
+import { randomUUID } from "crypto";
 import dotenv from "dotenv";
 import wav from "wav";
 
@@ -16,7 +17,7 @@ const CHANNELS = 1;
 const BYTES_PER_SAMPLE = BIT_DEPTH / 8; // 2
 const MAX_COMPRESSION_RATIO = 2.5; // cap to keep audio natural
 const RATE_LIMIT_DELAY_MS = 2000; // delay between requests (tune as needed)
-const TMP_DIR = "/tmp/tts_pipeline";
+const TMP_DIR_BASE = "/tmp/tts_pipeline"; // base path; unique suffix added per invocation
 const MIN_REFERENCE_SECONDS = 3; // minimum reference audio length (API requires 3+)
 const MAX_REFERENCE_SECONDS = 15; // cap reference slice length
 const QWEN_TTS_URL = process.env.QWEN_TTS_URL;
@@ -95,9 +96,9 @@ function readWavToPcm(filePath) {
  * Compress a PCM audio buffer by the given ratio using ffmpeg atempo.
  * Preserves pitch. Returns the compressed PCM buffer.
  */
-async function compressAudio(pcmBuffer, ratio, segmentIndex) {
-  const inputPath = path.join(TMP_DIR, `segment_${segmentIndex}_in.wav`);
-  const outputPath = path.join(TMP_DIR, `segment_${segmentIndex}_out.wav`);
+async function compressAudio(pcmBuffer, ratio, segmentIndex, tmpDir) {
+  const inputPath = path.join(tmpDir, `segment_${segmentIndex}_in.wav`);
+  const outputPath = path.join(tmpDir, `segment_${segmentIndex}_out.wav`);
 
   // Write input WAV
   await writePcmToWav(pcmBuffer, inputPath);
@@ -138,8 +139,9 @@ async function sliceSpeakerReference(
   startSec,
   durationSec,
   speakerId,
+  tmpDir,
 ) {
-  const outputPath = path.join(TMP_DIR, `reference_speaker_${speakerId}.wav`);
+  const outputPath = path.join(tmpDir, `reference_speaker_${speakerId}.wav`);
   await execFileAsync("ffmpeg", [
     "-y",
     "-ss",
@@ -163,7 +165,11 @@ async function sliceSpeakerReference(
  * Concatenates consecutive segments if a single one is too short.
  * Returns a Map<speakerId, Blob>.
  */
-async function buildSpeakerReferences(transcriptArray, sourceAudioPath) {
+async function buildSpeakerReferences(
+  transcriptArray,
+  sourceAudioPath,
+  tmpDir,
+) {
   // Collect all segments grouped by speaker
   const speakerSegments = new Map();
   for (const entry of transcriptArray) {
@@ -231,6 +237,7 @@ async function buildSpeakerReferences(transcriptArray, sourceAudioPath) {
       bestStart,
       bestDuration,
       speakerId,
+      tmpDir,
     );
     const buf = fs.readFileSync(wavPath);
     speakerBlobs.set(speakerId, new Blob([buf], { type: "audio/wav" }));
@@ -247,9 +254,9 @@ async function buildSpeakerReferences(transcriptArray, sourceAudioPath) {
  * Downloads the audio, then uses ffmpeg to convert to 24kHz mono s16le PCM.
  * Returns the PCM buffer.
  */
-async function gradioAudioToPcm(audioUrl, segmentIndex) {
-  const downloadPath = path.join(TMP_DIR, `gradio_${segmentIndex}_dl.wav`);
-  const pcmPath = path.join(TMP_DIR, `gradio_${segmentIndex}_pcm.wav`);
+async function gradioAudioToPcm(audioUrl, segmentIndex, tmpDir) {
+  const downloadPath = path.join(tmpDir, `gradio_${segmentIndex}_dl.wav`);
+  const pcmPath = path.join(tmpDir, `gradio_${segmentIndex}_pcm.wav`);
 
   // Fetch the audio file from the Gradio server
   const resp = await fetch(audioUrl);
@@ -305,12 +312,13 @@ async function generateAudio(inputAudioPath, outputAudioPath, transcriptArray) {
     throw new Error("transcriptArray is empty or undefined");
   }
 
-  // Resolve relative paths to absolute
-  inputAudioPath = path.resolve(inputAudioPath);
-  outputAudioPath = path.resolve(outputAudioPath);
+  // Resolve relative paths to absolute (against cwd, not __dirname)
+  inputAudioPath = path.resolve(process.cwd(), inputAudioPath);
+  outputAudioPath = path.resolve(process.cwd(), outputAudioPath);
 
-  // Create temp directory
-  fs.mkdirSync(TMP_DIR, { recursive: true });
+  // Create a unique temp directory per invocation to avoid race conditions
+  const tmpDir = `${TMP_DIR_BASE}_${randomUUID()}`;
+  fs.mkdirSync(tmpDir, { recursive: true });
 
   try {
     // Build per-speaker reference audio blobs from the source audio
@@ -324,6 +332,7 @@ async function generateAudio(inputAudioPath, outputAudioPath, transcriptArray) {
     const speakerBlobs = await buildSpeakerReferences(
       transcriptArray,
       inputAudioPath,
+      tmpDir,
     );
     console.log(`✓ All speaker references ready`);
 
@@ -405,7 +414,7 @@ async function generateAudio(inputAudioPath, outputAudioPath, transcriptArray) {
       // Download & convert Gradio audio response to raw PCM
       let pcmBuffer;
       try {
-        pcmBuffer = await gradioAudioToPcm(audioData.url, i);
+        pcmBuffer = await gradioAudioToPcm(audioData.url, i, tmpDir);
       } catch (err) {
         console.error(
           `  ✗ Failed to process audio for entry ${i}: ${err.message}`,
@@ -425,7 +434,7 @@ async function generateAudio(inputAudioPath, outputAudioPath, transcriptArray) {
         console.log(
           `  Compressing at ${effectiveRatio.toFixed(2)}x (cap: ${MAX_COMPRESSION_RATIO}x)...`,
         );
-        pcmBuffer = await compressAudio(pcmBuffer, effectiveRatio, i);
+        pcmBuffer = await compressAudio(pcmBuffer, effectiveRatio, i, tmpDir);
         const newDurationMs = pcmDurationMs(pcmBuffer);
         console.log(`  After compression: ${newDurationMs.toFixed(0)}ms`);
       } else {
@@ -460,7 +469,7 @@ async function generateAudio(inputAudioPath, outputAudioPath, transcriptArray) {
     );
   } finally {
     // Clean up temp dir
-    fs.rmSync(TMP_DIR, { recursive: true, force: true });
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 }
 
