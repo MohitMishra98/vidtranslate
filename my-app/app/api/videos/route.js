@@ -13,7 +13,7 @@ export async function POST(req) {
     const { user } = authResult;
 
     // Extract request body
-    const { title, public_id, secure_url, resource_type, duration, bytes } =
+    const { title, public_id, secure_url, resource_type, duration, bytes, language } =
       await req.json();
 
     if (!public_id || !secure_url || !title) {
@@ -32,6 +32,7 @@ export async function POST(req) {
       resource_type: resource_type,
       duration: duration,
       bytes: bytes,
+      language: language || "English",
     });
 
     return NextResponse.json(

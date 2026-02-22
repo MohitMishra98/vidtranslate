@@ -30,6 +30,10 @@ const videoSchema = new mongoose.Schema(
       type: String,
     },
 
+    language: {
+      type: String,
+    },
+
     duration: {
       type: Number,
     },

@@ -1,8 +1,5 @@
 "use client";
 
-// TODO: first go and implement video upload
-// page then come back to this page and implement this page axios request
-
 import { Play, CloudUpload, Trash, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -57,24 +54,12 @@ function Dashboard() {
         const videoResponse = await axios.get(
           "/api/videos?limit=10&page=1&sort=desc",
         );
-        console.log(videoResponse.data);
-        // process and convert the response to videos array to pass into component
+        console.log("testtt",videoResponse.data);
 
         const response = videoResponse.data.data; // array of videos
 
-        const newArr = response.map((video) => {
-          return {
-            videoId: video._id,
-            title: video.title,
-            language: video?.language || "English",
-            duration: getDuration(video.duration),
-            thumbnail: getThumbnailUrl(video.public_id),
-            uploadTime: getRelativeTime(video.createdAt),
-          };
-        });
-
-        setVideos(newArr);
-        console.log(newArr);
+        setVideos(response);
+        console.log(response);
       } catch (error) {
         console.log("Error fetching videos", error);
       }
@@ -120,13 +105,13 @@ function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {videos.map((video) => (
             <VideoCard
-              key={video.title}
-              videoId={video.videoId}
+              key={video._id}
+              videoId={video._id}
               title={video.title}
-              language={video.language}
-              duration={video.duration}
-              thumbnail={video.thumbnail}
-              uploadTime={video.uploadTime}
+              language={video?.language || "English"}
+              duration={getDuration(video.duration)}
+              thumbnail={getThumbnailUrl(video.public_id)}
+              uploadTime={getRelativeTime(video.createdAt)}
             />
           ))}
 
@@ -179,8 +164,11 @@ function VideoCard({
   return (
     <>
       <div
-        onClick={()=>{router.push(`/videos/${videoId}/jobs`)}}
-      className="group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+        onClick={() => {
+          router.push(`/videos/${videoId}/jobs`);
+        }}
+        className="group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1"
+      >
         <div className="aspect-video bg-slate-200 dark:bg-slate-800 relative overflow-hidden">
           <img
             alt="Video Thumbnail"
@@ -209,7 +197,8 @@ function VideoCard({
             </p>
           </div>
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               deleteVideo(videoId);
             }}
             className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
@@ -221,9 +210,6 @@ function VideoCard({
           <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[10px] font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">
             {/* language */}
             {language}
-          </span>
-          <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[10px] font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-            4K
           </span>
         </div>
       </div>

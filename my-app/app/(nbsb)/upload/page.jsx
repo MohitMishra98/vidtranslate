@@ -6,6 +6,10 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 function Upload() {
+  // input values
+  const [title, setTitle] = useState("");
+  const [sourceLanguage, setSourceLanguage] = useState("");
+  
   // first we need to get the signed uplaod key from BE
   async function getKeyAndUpload() {
     try {
@@ -49,6 +53,7 @@ function Upload() {
         resource_type,
         duration,
         bytes,
+        language: sourceLanguage,
       });
 
       setSuccessfullyUploaded(true);
@@ -66,10 +71,6 @@ function Upload() {
   const inputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState(null);
-
-  // input values
-  const [title, setTitle] = useState("");
-  const [sourceLanguage, setSourceLanguage] = useState("");
 
   // handlig uploading states
   const [isUploading, setIsUploading] = useState(false);

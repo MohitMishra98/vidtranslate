@@ -30,7 +30,7 @@ export async function DELETE(req, { params }) {
     const jobs = await Job.find({ video: video._id }).lean();
 
     // delete all job-related cloudinary videos
-    await Promise.all(jobs.map((job) => deleteVideoCloudinary(job.public_id)));
+    await Promise.all(jobs.map((job) => job?.public_id ? deleteVideoCloudinary(job.public_id) : null));
 
     // delete jobs from DB
     await Job.deleteMany({ video: video._id });
