@@ -68,13 +68,6 @@ export async function GET(req) {
       .skip(skipBy)
       .limit(limit);
 
-    if (!videos || videos.length === 0) {
-      return NextResponse.json(
-        { error: "User videos not found" },
-        { status: 404 }
-      );
-    }
-
     return NextResponse.json(
       { message: "videos fetched successfully", data: videos },
       { status: 200 }

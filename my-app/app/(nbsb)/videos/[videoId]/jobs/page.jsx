@@ -7,11 +7,12 @@ import {
   Hourglass,
   Plus,
   Trash2,
+  RotateCcw
 } from "lucide-react";
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 function Jobs({ params }) {
   const router = useRouter();
@@ -19,6 +20,11 @@ function Jobs({ params }) {
   const [updateData, setUpdateData] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [jobDeletedSuccessfully, setJobDeletedSuccessfully] = useState(false);
+
+  const loaderRef = useRef(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const [videoId, setVideoId] = useState("");
   useEffect(() => {
@@ -31,10 +37,49 @@ function Jobs({ params }) {
   // get all jobs of user related to video
   async function getJobs() {
     try {
+      if (!hasMore || loading) return;
+
+      setLoading(true);
+
       const { videoId } = await params;
-      const response = await axios.get(`/api/jobs?videoId=${videoId}`);
+      const response = await axios.get(
+        `/api/jobs?videoId=${videoId}&page=${page}&limit=10`,
+      );
+
       console.log(response.data);
-      setJobs(response.data.data);
+
+      const jobsArray = response.data.data;
+
+      setJobs((prev) => ([...prev, ...jobsArray]));
+
+      if (jobsArray.length === 0) {
+        setHasMore(false);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.log("Error occured while fetching jobs", error);
+    }
+  }
+
+  async function refreshJobs() {
+    try {
+      if (loading) return;
+
+      setLoading(true);
+
+      const { videoId } = await params;
+      const response = await axios.get(
+        `/api/jobs?videoId=${videoId}&page=${1}&limit=${10*(page-1)}`,
+      );
+
+      console.log(response.data);
+
+      const jobsArray = response.data.data;
+
+      setJobs(jobsArray);
+
+      setLoading(false);
     } catch (error) {
       console.log("Error occured while fetching jobs", error);
     }
@@ -59,15 +104,34 @@ function Jobs({ params }) {
   }
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && hasMore) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0 },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [loading, hasMore]);
+
+  useEffect(() => {
     // get initial data
     getJobs();
 
     // get data at interval
-    const interval = setInterval(() => getJobs(), 10000);
+    const interval = setInterval(() => refreshJobs(), 10000);
 
     // this callback runs every time before the useEffect runs or component unmounts
     return () => clearInterval(interval);
-  }, []);
+  }, [page]);
 
   function getRelativeTime(dateString) {
     const givenDate = new Date(dateString);
@@ -120,6 +184,15 @@ function Jobs({ params }) {
               <Plus />
               New Job
             </button>
+            <button
+              onClick={() => {
+                refreshJobs();
+              }}
+              className="bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] hover:cursor-pointer text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40"
+            >
+              <RotateCcw/>
+              Refrseh
+            </button>
           </div>
         </div>
 
@@ -147,6 +220,11 @@ function Jobs({ params }) {
               />
             ))}
           </div>
+        </div>
+
+        {/* inf scrolling observer ref */}
+        <div ref={loaderRef} className="text-center p-4">
+          {loading && <p>Loading... </p>}
         </div>
 
         {/* New job CTA */}

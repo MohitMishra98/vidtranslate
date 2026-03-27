@@ -3,7 +3,7 @@
 import { Clapperboard, Play, Languages, Search, Sun, Bell } from "lucide-react";
 
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
+import { useUser, UserButton } from "@clerk/nextjs";
 
 function NavBarAndSideBar({ children }) {
   return (
@@ -102,11 +102,7 @@ function Navbar() {
                 {user?.primaryEmailAddress?.emailAddress}
               </p>
             </div>
-            <img
-              alt="User avatar"
-              className="h-9 w-9 rounded-full border-2 border-[#FF46A2]/40"
-              src={user?.imageUrl}
-            />
+              <UserButton />
           </div>
         </div>
       </header>

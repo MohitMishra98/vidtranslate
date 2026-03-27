@@ -49,15 +49,15 @@ export async function POST(req) {
     }
 
     // sending the job to inngest
-    await inngest.send({
-      name: "translation/start",
-      data: {
-        _id: newJob._id,
-        video: newJob.video,
-        sourceLanguage: sourceLanguage,
-        targetLanguage: targetLanguage,
-      }
-    })
+    // await inngest.send({
+    //   name: "translation/start",
+    //   data: {
+    //     _id: newJob._id,
+    //     video: newJob.video,
+    //     sourceLanguage: sourceLanguage,
+    //     targetLanguage: targetLanguage,
+    //   }
+    // })
 
     return NextResponse.json(
       { message: "Translation job created", data: newJob },

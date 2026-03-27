@@ -2,7 +2,7 @@
 
 import { Play, CloudUpload, Trash, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { getCldImageUrl } from "next-cloudinary";
 
@@ -11,6 +11,12 @@ function Dashboard() {
   const [videos, setVideos] = useState([]);
   const [videoDeletedSuccessfully, setVideoDeletedSuccessfully] =
     useState(false);
+
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const loaderRef = useRef(null);
 
   function getThumbnailUrl(publicId) {
     return getCldImageUrl({
@@ -51,14 +57,24 @@ function Dashboard() {
 
   async function getVideos() {
     try {
+      if (loading || !hasMore) return;
+
+      setLoading(true);
+
       const videoResponse = await axios.get(
-        "/api/videos?limit=100&page=1&sort=desc",
+        `/api/videos?limit=10&page=${page}&sort=desc`,
       );
       console.log("testtt", videoResponse.data);
 
       const response = videoResponse.data.data; // array of videos
 
-      setVideos(response);
+      setVideos((prev) => [...prev, ...response]);
+
+      if (response.length === 0) {
+        setHasMore(false);
+      }
+
+      setLoading(false);
       console.log(response);
     } catch (error) {
       console.log("Error fetching videos", error);
@@ -84,20 +100,28 @@ function Dashboard() {
   }
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && hasMore) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0 },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [loading, hasMore]);
+
+  useEffect(() => {
     // get the list of video
     getVideos();
-  }, []);
-
-  // const videos = [
-  //   {
-  //     title: "Sample Title",
-  //     language: "Engish",
-  //     duration: "01:19",
-  //     thumbnail:
-  //       "https://res.cloudinary.com/dehh7d0sr/video/upload/f_jpg/q_auto/v1/videos/u1vdjvu5qvlw7berj2f6?_a=BAVMn6AQ0",
-  //     uploadTime: "2 hours ago",
-  //   },
-  // ];
+  }, [page]);
 
   return (
     <>
@@ -153,6 +177,10 @@ function Dashboard() {
             </p>
           </button>
         </div>
+
+        {/* inf scroll observer div */}
+        <div ref={loaderRef} className="text-center p-4">{loading && <p>Loading...</p>}</div>
+
         {videoDeletedSuccessfully && (
           <div className="transition duration-1000 fixed right-4 bottom-4 py-2 px-10 bg-green-500/80 text-white text-medium font-bold rounded-xl">
             Video Successfully Deleted
@@ -235,3 +263,14 @@ function VideoCard({
     </>
   );
 }
+
+// const videos = [
+//   {
+//     title: "Sample Title",
+//     language: "Engish",
+//     duration: "01:19",
+//     thumbnail:
+//       "https://res.cloudinary.com/dehh7d0sr/video/upload/f_jpg/q_auto/v1/videos/u1vdjvu5qvlw7berj2f6?_a=BAVMn6AQ0",
+//     uploadTime: "2 hours ago",
+//   },
+// ];
