@@ -48,24 +48,24 @@ function DragAndDrop() {
         }}
         className={`
           group relative w-full h-80 rounded-2xl border-2 border-dashed
-          ${isDragging ? "border-primary bg-primary/10" : "border-slate-300 dark:border-slate-600"}
-          bg-slate-50/50 dark:bg-slate-800/30
-          hover:border-primary/60 transition-all duration-300
+          ${isDragging ? "border-[#FF46A2] bg-[#FF46A2]/10" : "border-white/20"}
+          bg-slate-900/40
+          hover:border-[#00F0FF]/60 transition-all duration-300
           flex flex-col items-center justify-center cursor-pointer
         `}
       >
-        <div className="w-20 h-20 rounded-full bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center mb-4">
-          <CloudUpload className="text-4xl text-slate-400 group-hover:text-primary" />
+        <div className="w-20 h-20 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-4">
+          <CloudUpload className="text-4xl text-slate-400 group-hover:text-[#FF46A2]" />
         </div>
 
         {!file ? (
           <>
-            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">
+            <h3 className="text-lg font-bold text-slate-100">
               Drag and drop video files
             </h3>
             <p className="text-sm text-slate-500 mt-2">
               or{" "}
-              <span className="text-primary font-semibold underline">
+              <span className="text-[#FF46A2] font-semibold underline">
                 browse files
               </span>
             </p>
@@ -75,7 +75,7 @@ function DragAndDrop() {
           </>
         ) : (
           <>
-            <h3 className="text-lg font-bold text-primary">{file.name}</h3>
+            <h3 className="text-lg font-bold text-[#FF46A2]">{file.name}</h3>
             <p className="text-sm text-slate-500 mt-2">
               {(file.size / (1024 * 1024)).toFixed(2)} MB
             </p>

@@ -25,7 +25,7 @@ function CreateJob({ params }) {
   const [sourceLanguage, setSourceLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     (async () => {
@@ -41,28 +41,28 @@ function CreateJob({ params }) {
     })();
   }, [params]);
 
-  async function onSubmitHandler(){
+  async function onSubmitHandler() {
     try {
       const { videoId } = await params;
-      if(!sourceLanguage|| !targetLanguage || !videoTitle ){
-        alert("Select all the fields")
-        return
+      if (!sourceLanguage || !targetLanguage || !videoTitle) {
+        alert("Select all the fields");
+        return;
       }
 
       const response = await axios.post("/api/jobs", {
         videoId: videoId,
         targetLanguage: targetLanguage,
-        sourceLanguage: sourceLanguage
-      })
+        sourceLanguage: sourceLanguage,
+      });
 
-      console.log(response)
+      console.log(response);
 
-      if(response.status === 201){
-        alert("Job created successfully")
-        router.push(`/videos/${videoId}/jobs`)
+      if (response.status === 201) {
+        alert("Job created successfully");
+        router.push(`/videos/${videoId}/jobs`);
       }
     } catch (error) {
-      console.log("Error occured while submitting form", error)
+      console.log("Error occured while submitting form", error);
     }
   }
 
@@ -74,7 +74,7 @@ function CreateJob({ params }) {
         <div className="flex items-center justify-between mb-8">
           <div>
             <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-              <a className="hover:text-primary transition-colors" href="#">
+              <a className="hover:text-[#00F0FF] transition-colors" href="#">
                 Translation Jobs
               </a>
               <ChevronRight className="h-4 w-4 text-slate-400" />
@@ -94,9 +94,9 @@ function CreateJob({ params }) {
         {/* Main layout: form */}
         <div className="space-y-6">
           {/* Configuration form */}
-          <div className="p-8 rounded-3xl glass-card border border-slate-200 dark:border-slate-800 shadow-xl">
+          <div className="p-8 rounded-3xl glass-card border border-white/10 shadow-xl bg-slate-900/40">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <SlidersHorizontal className="h-5 w-5 text-primary" />
+              <SlidersHorizontal className="h-5 w-5 text-[#00F0FF]" />
               Configuration
             </h2>
 
@@ -112,7 +112,7 @@ function CreateJob({ params }) {
                   </div>
                   <select
                     disabled
-                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-100 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all cursor-pointer"
+                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                   >
                     {/* add the title of selected video here */}
                     <option value="0">{videoTitle}</option>
@@ -135,7 +135,7 @@ function CreateJob({ params }) {
                       onChange={(e) => {
                         setSourceLanguage(e.target.value);
                       }}
-                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-100 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all cursor-pointer"
+                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                     >
                       <option>English (US)</option>
                       <option>Spanish (ES)</option>
@@ -165,7 +165,7 @@ function CreateJob({ params }) {
                       onChange={(e) => {
                         setTargetLanguage(e.target.value);
                       }}
-                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-100 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all cursor-pointer"
+                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                     >
                       <option>English (US)</option>
                       <option>Spanish (ES)</option>
@@ -184,27 +184,27 @@ function CreateJob({ params }) {
               </div>
 
               {/* Model selection */}
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-700/50">
+              <div className="pt-4 border-t border-white/10">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">
                   Translation Model
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-primary/50 dark:hover:border-primary/50 transition-all bg-slate-50 dark:bg-slate-900/40">
+                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-white/10 cursor-pointer hover:border-[#FF46A2]/50 transition-all bg-slate-900/40">
                     <input
                       className="sr-only peer"
                       name="model"
                       type="radio"
                       value="standard"
                     />
-                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-primary peer-checked:bg-primary transition-colors"></span>
-                    <Gauge className="h-6 w-6 text-slate-400 mb-2 peer-checked:text-primary" />
+                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-[#FF46A2] peer-checked:bg-[#FF46A2] transition-colors"></span>
+                    <Gauge className="h-6 w-6 text-slate-400 mb-2 peer-checked:text-[#FF46A2]" />
                     <span className="font-semibold text-sm">Standard</span>
                     <span className="text-xs text-slate-500 mt-1">
                       Fast processing, good accuracy
                     </span>
                   </label>
 
-                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-primary cursor-pointer bg-primary/5 dark:bg-primary/10 transition-all">
+                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-[#FF46A2] cursor-pointer bg-[#FF46A2]/10 transition-all">
                     <input
                       checked=""
                       className="sr-only peer"
@@ -212,23 +212,23 @@ function CreateJob({ params }) {
                       type="radio"
                       value="pro"
                     />
-                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-primary peer-checked:bg-primary transition-colors"></span>
-                    <Brain className="h-6 w-6 text-primary mb-2" />
+                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-[#FF46A2] peer-checked:bg-[#FF46A2] transition-colors"></span>
+                    <Brain className="h-6 w-6 text-[#FF46A2] mb-2" />
                     <span className="font-semibold text-sm">Pro Neural</span>
                     <span className="text-xs text-slate-500 mt-1">
                       Highest accuracy, context aware
                     </span>
                   </label>
 
-                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-primary/50 dark:hover:border-primary/50 transition-all bg-slate-50 dark:bg-slate-900/40">
+                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-white/10 cursor-pointer hover:border-[#FF46A2]/50 transition-all bg-slate-900/40">
                     <input
                       className="sr-only peer"
                       name="model"
                       type="radio"
                       value="lip"
                     />
-                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-primary peer-checked:bg-primary transition-colors"></span>
-                    <ScanFace className="h-6 w-6 text-slate-400 mb-2 peer-checked:text-primary" />
+                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-[#FF46A2] peer-checked:bg-[#FF46A2] transition-colors"></span>
+                    <ScanFace className="h-6 w-6 text-slate-400 mb-2 peer-checked:text-[#FF46A2]" />
                     <span className="font-semibold text-sm">Lip Sync</span>
                     <span className="text-xs text-slate-500 mt-1">
                       Matches lip movement (Beta)
@@ -242,10 +242,12 @@ function CreateJob({ params }) {
                 <label className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors">
                   <div className="relative inline-flex items-center cursor-pointer">
                     <input className="sr-only peer" type="checkbox" value="" />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 dark:peer-focus:ring-primary/30 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                    <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF46A2]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#FF46A2]"></div>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium">Clone Speaker Voice</span>
+                    <span className="text-sm font-medium">
+                      Clone Speaker Voice
+                    </span>
                     <span className="text-xs text-slate-500">
                       Use AI to replicate the original speaker&apos;s tone
                     </span>
@@ -254,7 +256,10 @@ function CreateJob({ params }) {
               </div>
             </div>
 
-            <button onClick={onSubmitHandler} className="w-full mt-4 bg-primary hover:bg-primary/90 text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5">
+            <button
+              onClick={onSubmitHandler}
+              className="w-full mt-4 bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40 hover:-translate-y-0.5"
+            >
               <Sparkles className="h-5 w-5" />
               Start Translation
             </button>

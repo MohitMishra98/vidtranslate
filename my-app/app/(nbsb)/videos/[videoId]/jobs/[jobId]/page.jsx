@@ -27,7 +27,7 @@ function VideoPlayer({ params }) {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <PlayCircle className="h-6 w-6 text-primary" />
+            <PlayCircle className="h-6 w-6 text-[#FF46A2]" />
             Video Player
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">
@@ -49,7 +49,7 @@ function VideoPlayer({ params }) {
             link.click();
             document.body.removeChild(link);
           }}
-          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-primary/25"
+          className="flex items-center gap-2 bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40"
         >
           <Download className="h-4 w-4" />
           Download
@@ -57,19 +57,19 @@ function VideoPlayer({ params }) {
       </div>
 
       {/* Player card with placeholder and metadata */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+      <div className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden">
         {/* Video player area */}
         <div className="aspect-video bg-slate-100 dark:bg-slate-800">
           <video className="size-full" controls src={job?.secure_url}></video>
         </div>
         <div className="px-6 py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+            <h2 className="text-lg font-semibold text-slate-100">
               {job?.video?.title}
             </h2>
           </div>
           {/* Language indicator */}
-          <span className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[10px] font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+          <span className="inline-flex items-center gap-2 px-3 py-1 bg-slate-800 rounded-md text-[10px] font-medium text-slate-300 uppercase tracking-wider">
             <Languages className="h-3.5 w-3.5" />
             {job?.targetLanguage}
           </span>

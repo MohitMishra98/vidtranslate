@@ -115,7 +115,7 @@ function Jobs({ params }) {
               onClick={() => {
                 router.push(`/videos/${videoId}/jobs/create`);
               }}
-              className="bg-primary hover:bg-primary/90 hover:cursor-pointer text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-primary/25"
+              className="bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] hover:cursor-pointer text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40"
             >
               <Plus />
               New Job
@@ -124,14 +124,14 @@ function Jobs({ params }) {
         </div>
 
         {/* Jobs list */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
-          <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-4 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60">
+        <div className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-4 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-400 bg-slate-900/60">
             <span>Language</span>
             <span>Status</span>
             <span>Relative Time</span>
             <span className="text-right">Actions</span>
           </div>
-          <div className="divide-y divide-slate-200 dark:divide-slate-800">
+          <div className="divide-y divide-white/10">
             {/* DB states and these states may mismatch causing the card to load but not display */}
             {/* TODO: Fix this bug */}
             {jobs.map((job) => (
@@ -154,7 +154,7 @@ function Jobs({ params }) {
           onClick={() => {
             router.push(`/videos/${videoId}/jobs/create`);
           }}
-          className="mt-6 w-full flex items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40 py-4 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:border-primary/60 hover:bg-primary/5 transition-all"
+          className="mt-6 w-full flex items-center justify-center gap-2 rounded-2xl border border-dashed border-white/20 bg-slate-900/40 py-4 text-sm font-semibold text-slate-300 hover:border-[#FF46A2]/60 hover:bg-[#FF46A2]/5 transition-all"
         >
           <Plus className="h-4 w-4" />
           Start New Translation
@@ -191,16 +191,14 @@ function JobCards({
             router.push(`/videos/${videoId}/jobs/${jobId}`);
           }}
           onKeyDown={() => {}}
-          className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-6 py-4 text-sm text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-6 py-4 text-sm text-left transition-colors hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF46A2]/40"
         >
-          <span className="font-medium text-slate-800 dark:text-slate-100">
-            {language}
-          </span>
+          <span className="font-medium text-slate-100">{language}</span>
           <span className="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
             <Check className="h-4 w-4" />
             Completed
           </span>
-          <span className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
+          <span className="inline-flex items-center gap-2 text-slate-400">
             <Clock className="h-4 w-4" />
             {relativeTime}
           </span>
@@ -226,16 +224,14 @@ function JobCards({
           tabIndex={0}
           onClick={() => {}}
           onKeyDown={() => {}}
-          className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-6 py-4 text-sm text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-6 py-4 text-sm text-left transition-colors hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF46A2]/40"
         >
-          <span className="font-medium text-slate-800 dark:text-slate-100">
-            {language}
-          </span>
+          <span className="font-medium text-slate-100">{language}</span>
           <span className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 font-semibold">
             <Hourglass className="h-4 w-4" />
             {options.status}
           </span>
-          <span className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
+          <span className="inline-flex items-center gap-2 text-slate-400">
             <Clock className="h-4 w-4" />
             {relativeTime}
           </span>
@@ -260,16 +256,14 @@ function JobCards({
           tabIndex={0}
           onClick={() => {}}
           onKeyDown={() => {}}
-          className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-6 py-4 text-sm text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-6 py-4 text-sm text-left transition-colors hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF46A2]/40"
         >
-          <span className="font-medium text-slate-800 dark:text-slate-100">
-            {language}
-          </span>
+          <span className="font-medium text-slate-100">{language}</span>
           <span className="inline-flex items-center gap-2 text-red-600 dark:text-red-400 font-semibold">
             <AlertTriangle className="h-4 w-4" />
             Failed
           </span>
-          <span className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
+          <span className="inline-flex items-center gap-2 text-slate-400">
             <Clock className="h-4 w-4" />
             {relativeTime}
           </span>

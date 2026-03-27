@@ -2,20 +2,20 @@ import FeatureCard from "./FeatureCard";
 
 const Features = () => {
   return (
-    <section id="features" className="py-20 bg-white">
+    <section id="features" className="py-20 bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">
+          <h2 className="text-base text-[#00F0FF] font-semibold tracking-wide uppercase">
             Features
           </h2>
-          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
             Everything you need to go global
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <FeatureCard
-            colorClass="bg-indigo-100 text-indigo-600"
+            colorClass="bg-slate-800 text-[#00F0FF] border border-white/10"
             icon={
               <svg
                 className="w-6 h-6"
@@ -35,7 +35,7 @@ const Features = () => {
             description="Preserve the original speaker's tone and emotion while switching languages seamlessly."
           />
           <FeatureCard
-            colorClass="bg-emerald-100 text-emerald-600"
+            colorClass="bg-slate-800 text-[#FF46A2] border border-white/10"
             icon={
               <svg
                 className="w-6 h-6"
@@ -55,7 +55,7 @@ const Features = () => {
             description="Generate perfectly synced subtitles in SRT or VTT formats with 99% accuracy."
           />
           <FeatureCard
-            colorClass="bg-orange-100 text-orange-600"
+            colorClass="bg-slate-800 text-[#FFFF00] border border-white/10"
             icon={
               <svg
                 className="w-6 h-6"

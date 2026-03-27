@@ -116,7 +116,7 @@ function Dashboard() {
             onClick={() => {
               router.push("/upload");
             }}
-            className="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-primary/25"
+            className="bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40"
           >
             <CloudUpload className="text-lg"></CloudUpload>
             Upload New
@@ -143,12 +143,12 @@ function Dashboard() {
             onClick={() => {
               router.push("/upload");
             }}
-            className="flex flex-col items-center justify-center aspect-video sm:aspect-auto sm:h-full bg-slate-100/50 dark:bg-slate-800/30 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 group hover:border-primary/50 hover:bg-primary/5 transition-all p-8 text-center min-h-[280px]"
+            className="flex flex-col items-center justify-center aspect-video sm:aspect-auto sm:h-full bg-slate-900/40 rounded-3xl border-2 border-dashed border-white/20 group hover:border-[#FF46A2]/50 hover:bg-[#FF46A2]/5 transition-all p-8 text-center min-h-70"
           >
-            <div className="w-14 h-14 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-primary group-hover:text-white transition-all duration-300 mb-4 shadow-inner">
+            <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-[#FF46A2] group-hover:text-white transition-all duration-300 mb-4 shadow-inner">
               <Plus className="text-3xl"></Plus>
             </div>
-            <p className="font-bold text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">
+            <p className="font-bold text-slate-300 group-hover:text-[#FF46A2] transition-colors">
               Add New Video
             </p>
           </button>
@@ -174,16 +174,16 @@ function VideoCard({
   uploadTime,
   deleteVideo,
 }) {
-    const router = useRouter();
+  const router = useRouter();
   return (
     <>
       <div
         onClick={() => {
           router.push(`/videos/${videoId}/jobs`);
         }}
-        className="group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1"
+        className="group bg-slate-900/70 rounded-3xl overflow-hidden border border-white/10 transition-all hover:shadow-2xl hover:shadow-[#FF46A2]/15 hover:-translate-y-1"
       >
-        <div className="aspect-video bg-slate-200 dark:bg-slate-800 relative overflow-hidden">
+        <div className="aspect-video bg-slate-800 relative overflow-hidden">
           <img
             alt="Video Thumbnail"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -201,11 +201,11 @@ function VideoCard({
         </div>
         <div className="p-5 flex items-start justify-between">
           <div className="min-w-0">
-            <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate">
+            <h3 className="font-semibold text-slate-100 truncate">
               {/* title */}
               {title}
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 mt-1">
               {/* upload time */}
               {uploadTime}
             </p>
@@ -221,7 +221,7 @@ function VideoCard({
           </button>
         </div>
         <div className="px-5 pb-5 flex gap-2">
-          <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[10px] font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+          <span className="px-2 py-1 bg-slate-800 rounded-md text-[10px] font-medium text-slate-300 uppercase tracking-wider">
             {/* language */}
             {language}
           </span>

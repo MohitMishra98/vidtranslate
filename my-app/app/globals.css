@@ -3,6 +3,10 @@
 @theme inline {
   /* 1. Define your custom colors linking to CSS vars */
   --color-primary: var(--primary);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-orange: var(--accent-orange);
   --color-background-light: var(--background-light);
   --color-background-dark: var(--background-dark);
 
@@ -10,8 +14,8 @@
   --font-display: var(--font-inter), "sans-serif";
 
   /* 3. Define default border radius override */
-  --radius-DEFAULT: 0.75rem; 
-  
+  --radius-DEFAULT: 0.75rem;
+
   /* 4. Animation for transitions */
   --animate-fade-in: fade-in 0.5s ease-in-out;
 }
@@ -33,31 +37,34 @@
 
 /* Define the actual Color Values */
 :root {
-  /* Default (Light Mode) */
-  --background: #f8fafc; /* Your background-light */
-  --foreground: #0f172a; /* Your background-dark (as text) */
-  
-  --primary: #8b5cf6;       /* Vibrant Purple */
-  --background-light: #f8fafc;
-  --background-dark: #0f172a;
+  --background: #0f1117;
+  --foreground: #f8fafc;
+
+  --primary: #ff46a2;
+  --accent-cyan: #00f0ff;
+  --accent-pink: #ff46a2;
+  --accent-yellow: #ffff00;
+  --accent-orange: #ee4b2b;
+
+  --background-light: #111827;
+  --background-dark: #0f1117;
 }
 
 /* Dark Mode Overrides 
    Note: We use the selector approach (.dark) so your toggle button works
 */
 .dark {
-  --background: #0f172a; /* Your background-dark */
-  --foreground: #f8fafc; /* Your background-light (as text) */
-  
-  /* You can adjust primary for dark mode here if needed */
-  --primary: #a78bfa; 
+  --background: #0f1117;
+  --foreground: #f8fafc;
+  --primary: #ff46a2;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   /* Apply the font globally */
-  font-family: var(--font-display); 
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-display);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
-

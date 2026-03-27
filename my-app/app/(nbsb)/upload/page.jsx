@@ -9,7 +9,7 @@ function Upload() {
   // input values
   const [title, setTitle] = useState("");
   const [sourceLanguage, setSourceLanguage] = useState("");
-  
+
   // first we need to get the signed uplaod key from BE
   async function getKeyAndUpload() {
     try {
@@ -108,7 +108,7 @@ function Upload() {
               </p>
             </div>
             <Link
-              className="flex items-center text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+              className="flex items-center text-sm font-medium text-slate-400 hover:text-[#00F0FF] transition-colors"
               href="/videos"
             >
               <ArrowLeft className="mr-1 text-base"></ArrowLeft>
@@ -117,8 +117,8 @@ function Upload() {
           </div>
 
           {/* Upload form card */}
-          <div className="glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
+          <div className="glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden bg-slate-900/30">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF46A2]/20 blur-[80px] rounded-full pointer-events-none"></div>
 
             <div className="relative z-10 space-y-8">
               {/* Dropzone */}
@@ -145,24 +145,24 @@ function Upload() {
                 }}
                 className={`
           group relative w-full h-80 rounded-2xl border-2 border-dashed
-          ${isDragging ? "border-primary bg-primary/10" : "border-slate-300 dark:border-slate-600"}
-          bg-slate-50/50 dark:bg-slate-800/30
-          hover:border-primary/60 transition-all duration-300
+          ${isDragging ? "border-[#FF46A2] bg-[#FF46A2]/10" : "border-white/20"}
+          bg-slate-900/40
+          hover:border-[#00F0FF]/60 transition-all duration-300
           flex flex-col items-center justify-center cursor-pointer
         `}
               >
-                <div className="w-20 h-20 rounded-full bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center mb-4">
-                  <CloudUpload className="text-4xl text-slate-400 group-hover:text-primary" />
+                <div className="w-20 h-20 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-4">
+                  <CloudUpload className="text-4xl text-slate-400 group-hover:text-[#FF46A2]" />
                 </div>
 
                 {!file ? (
                   <>
-                    <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">
+                    <h3 className="text-lg font-bold text-slate-100">
                       Drag and drop video files
                     </h3>
                     <p className="text-sm text-slate-500 mt-2">
                       or{" "}
-                      <span className="text-primary font-semibold underline">
+                      <span className="text-[#FF46A2] font-semibold underline">
                         browse files
                       </span>
                     </p>
@@ -172,7 +172,7 @@ function Upload() {
                   </>
                 ) : (
                   <>
-                    <h3 className="text-lg font-bold text-primary">
+                    <h3 className="text-lg font-bold text-[#FF46A2]">
                       {file.name}
                     </h3>
                     <p className="text-sm text-slate-500 mt-2">
@@ -193,7 +193,7 @@ function Upload() {
                       <Pencil className="text-slate-400 scale-90"></Pencil>
                     </div>
                     <input
-                      className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all shadow-sm"
+                      className="w-full pl-11 pr-4 py-3.5 bg-slate-900/60 border border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-100 placeholder-slate-400 transition-all shadow-sm"
                       placeholder="e.g. Q1 Marketing Update"
                       type="text"
                       value={title}
@@ -214,7 +214,7 @@ function Upload() {
                     onChange={(e) => {
                       setSourceLanguage(e.target.value);
                     }}
-                    className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary text-slate-900 dark:text-white transition-all shadow-sm"
+                    className="w-full px-4 py-3.5 bg-slate-900/60 border border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-100 transition-all shadow-sm"
                   >
                     <option>English</option>
                     <option>Spanish</option>
@@ -225,7 +225,7 @@ function Upload() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 dark:border-slate-700/50">
+              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/10">
                 {successfullyUploaded && (
                   <div className="px-6 py-3 rounded-xl text-white dark:text-white font-medium bg-green-500 dark:hover:bg-green-800 transition-colors">
                     Upload Successfull
@@ -239,13 +239,13 @@ function Upload() {
                 {!isUploading ? (
                   <button
                     onClick={getKeyAndUpload}
-                    className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0"
+                    className="bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40 hover:-translate-y-0.5 active:translate-y-0"
                   >
                     <CloudUpload />
                     Start Upload
                   </button>
                 ) : (
-                  <button className="bg-primary/10 hover:bg-primary/10 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all  hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 cursor-not-allowed">
+                  <button className="bg-[#FF46A2]/15 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all cursor-not-allowed">
                     <CloudUpload />
                     Uploading...
                   </button>
