@@ -129,7 +129,7 @@ function Dashboard() {
         {/* Page header with title and upload button */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               Videos Dashboard
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1">
@@ -167,19 +167,21 @@ function Dashboard() {
             onClick={() => {
               router.push("/upload");
             }}
-            className="flex flex-col items-center justify-center aspect-video sm:aspect-auto sm:h-full bg-slate-900/40 rounded-3xl border-2 border-dashed border-white/20 group hover:border-[#FF46A2]/50 hover:bg-[#FF46A2]/5 transition-all p-8 text-center min-h-70"
+            className="flex flex-col items-center justify-center aspect-video sm:aspect-auto sm:h-full bg-slate-100/50 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-300 dark:border-white/20 group hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-primary)]/5 transition-all p-8 text-center min-h-70"
           >
-            <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-[#FF46A2] group-hover:text-white transition-all duration-300 mb-4 shadow-inner">
+            <div className="w-14 h-14 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all duration-300 mb-4 shadow-inner">
               <Plus className="text-3xl"></Plus>
             </div>
-            <p className="font-bold text-slate-300 group-hover:text-[#FF46A2] transition-colors">
+            <p className="font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)] transition-colors">
               Add New Video
             </p>
           </button>
         </div>
 
         {/* inf scroll observer div */}
-        <div ref={loaderRef} className="text-center p-4">{loading && <p>Loading...</p>}</div>
+        <div ref={loaderRef} className="text-center p-4">
+          {loading && <p>Loading...</p>}
+        </div>
 
         {videoDeletedSuccessfully && (
           <div className="transition duration-1000 fixed right-4 bottom-4 py-2 px-10 bg-green-500/80 text-white text-medium font-bold rounded-xl">
@@ -209,9 +211,9 @@ function VideoCard({
         onClick={() => {
           router.push(`/videos/${videoId}/jobs`);
         }}
-        className="group bg-slate-900/70 rounded-3xl overflow-hidden border border-white/10 transition-all hover:shadow-2xl hover:shadow-[#FF46A2]/15 hover:-translate-y-1"
+        className="group bg-white dark:bg-slate-900/70 rounded-3xl overflow-hidden border border-slate-200 dark:border-white/10 transition-all hover:shadow-2xl hover:shadow-[var(--color-primary)]/15 hover:-translate-y-1 shadow-sm"
       >
-        <div className="aspect-video bg-slate-800 relative overflow-hidden">
+        <div className="aspect-video bg-slate-100 dark:bg-slate-800 relative overflow-hidden">
           <img
             alt="Video Thumbnail"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -229,11 +231,11 @@ function VideoCard({
         </div>
         <div className="p-5 flex items-start justify-between">
           <div className="min-w-0">
-            <h3 className="font-semibold text-slate-100 truncate">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
               {/* title */}
               {title}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               {/* upload time */}
               {uploadTime}
             </p>

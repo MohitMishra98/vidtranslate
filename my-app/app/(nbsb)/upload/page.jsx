@@ -117,8 +117,8 @@ function Upload() {
           </div>
 
           {/* Upload form card */}
-          <div className="glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden bg-slate-900/30">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF46A2]/20 blur-[80px] rounded-full pointer-events-none"></div>
+          <div className="glass-panel rounded-3xl p-8 border border-slate-200 dark:border-white/10 relative overflow-hidden bg-white/50 dark:bg-slate-900/30">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)]/10 dark:bg-[var(--color-primary)]/20 blur-[80px] rounded-full pointer-events-none"></div>
 
             <div className="relative z-10 space-y-8">
               {/* Dropzone */}
@@ -145,19 +145,19 @@ function Upload() {
                 }}
                 className={`
           group relative w-full h-80 rounded-2xl border-2 border-dashed
-          ${isDragging ? "border-[#FF46A2] bg-[#FF46A2]/10" : "border-white/20"}
-          bg-slate-900/40
+          ${isDragging ? "border-[#FF46A2] bg-[#FF46A2]/5 dark:bg-[#FF46A2]/10" : "border-slate-300 dark:border-white/20"}
+          bg-slate-50/50 dark:bg-slate-900/40
           hover:border-[#00F0FF]/60 transition-all duration-300
           flex flex-col items-center justify-center cursor-pointer
         `}
               >
-                <div className="w-20 h-20 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-4">
+                <div className="w-20 h-20 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-center mb-4 shadow-sm">
                   <CloudUpload className="text-4xl text-slate-400 group-hover:text-[#FF46A2]" />
                 </div>
 
                 {!file ? (
                   <>
-                    <h3 className="text-lg font-bold text-slate-100">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                       Drag and drop video files
                     </h3>
                     <p className="text-sm text-slate-500 mt-2">
@@ -193,7 +193,7 @@ function Upload() {
                       <Pencil className="text-slate-400 scale-90"></Pencil>
                     </div>
                     <input
-                      className="w-full pl-11 pr-4 py-3.5 bg-slate-900/60 border border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-100 placeholder-slate-400 transition-all shadow-sm"
+                      className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-900 dark:text-slate-100 placeholder-slate-400 transition-all shadow-sm"
                       placeholder="e.g. Q1 Marketing Update"
                       type="text"
                       value={title}
@@ -214,8 +214,9 @@ function Upload() {
                     onChange={(e) => {
                       setSourceLanguage(e.target.value);
                     }}
-                    className="w-full px-4 py-3.5 bg-slate-900/60 border border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-100 transition-all shadow-sm"
+                    className="w-full px-4 py-3.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-900 dark:text-slate-100 transition-all shadow-sm"
                   >
+                    <option>Select a language</option>
                     <option>English</option>
                     <option>Spanish</option>
                     <option>French</option>
@@ -225,7 +226,7 @@ function Upload() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
                 {successfullyUploaded && (
                   <div className="px-6 py-3 rounded-xl text-white dark:text-white font-medium bg-green-500 dark:hover:bg-green-800 transition-colors">
                     Upload Successfull

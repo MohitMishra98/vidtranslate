@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark, .dark *));
+
 @theme inline {
   /* 1. Define your custom colors linking to CSS vars */
   --color-primary: var(--primary);
@@ -37,8 +39,8 @@
 
 /* Define the actual Color Values */
 :root {
-  --background: #0f1117;
-  --foreground: #f8fafc;
+  --background: #f8fafc;
+  --foreground: #0f1117;
 
   --primary: #ff46a2;
   --accent-cyan: #00f0ff;
@@ -46,7 +48,7 @@
   --accent-yellow: #ffff00;
   --accent-orange: #ee4b2b;
 
-  --background-light: #111827;
+  --background-light: #f1f5f9;
   --background-dark: #0f1117;
 }
 

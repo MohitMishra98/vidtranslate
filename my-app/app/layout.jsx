@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "next-themes"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,11 +29,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="dark">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased `}
         >
-          {children}
+          <ThemeProvider
+          // attribute="class" means that the theme will be applied by adding a class to the html root element. 
+          // The class will be either "light" or "dark" depending on the current theme.
+          // without this the theme is not changing
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

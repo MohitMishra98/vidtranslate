@@ -69,7 +69,7 @@ function CreateJob({ params }) {
         {/* Page header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               Initiate New Translation
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1">
@@ -81,9 +81,9 @@ function CreateJob({ params }) {
         {/* Main layout: form */}
         <div className="space-y-6">
           {/* Configuration form */}
-          <div className="p-8 rounded-3xl glass-card border border-white/10 shadow-xl bg-slate-900/40">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <SlidersHorizontal className="h-5 w-5 text-[#00F0FF]" />
+          <div className="p-8 rounded-3xl glass-card border border-slate-200 dark:border-white/10 shadow-xl bg-white/50 dark:bg-slate-900/40">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+              <SlidersHorizontal className="h-5 w-5 text-[var(--color-primary)] dark:text-[#00F0FF]" />
               Configuration
             </h2>
 
@@ -99,7 +99,7 @@ function CreateJob({ params }) {
                   </div>
                   <select
                     disabled
-                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
+                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                   >
                     {/* add the title of selected video here */}
                     <option value="0">{videoTitle}</option>
@@ -122,7 +122,7 @@ function CreateJob({ params }) {
                       onChange={(e) => {
                         setSourceLanguage(e.target.value);
                       }}
-                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
+                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                     >
                       <option>Select source language</option>
                       <option>English (US)</option>
@@ -153,7 +153,7 @@ function CreateJob({ params }) {
                       onChange={(e) => {
                         setTargetLanguage(e.target.value);
                       }}
-                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
+                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                     >
                       <option>Select a target language</option>
                       <option>English (US)</option>
