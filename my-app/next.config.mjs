@@ -9,6 +9,15 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        'localhost:3000', 
+        'fuzzy-enigma-4jjqp75xg5prcjpx9-3000.app.github.dev', // Your exact current codespace
+        '*.app.github.dev' // Wildcard so it works even if your codespace name changes
+      ],
+    },
+  },
 };
 
 export default nextConfig;
