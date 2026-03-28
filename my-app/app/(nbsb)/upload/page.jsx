@@ -217,10 +217,17 @@ function Upload() {
                     className="w-full px-4 py-3.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] text-slate-900 dark:text-slate-100 transition-all shadow-sm"
                   >
                     <option>Select a language</option>
-                    <option>English</option>
-                    <option>Spanish</option>
-                    <option>French</option>
-                    <option>German</option>
+                    <option>English (US)</option>
+                    <option>Spanish (ES)</option>
+                    <option>French (FR)</option>
+                    <option>German (DE)</option>
+                    <option>Hindi (IN)</option>
+                    <option>Chinese (CN)</option>
+                    <option>Korean (KR)</option>
+                    <option>Russian (RU)</option>
+                    <option>Portuguese (BR)</option>
+                    <option>Italian (IT)</option>
+                    <option>Japanese (JP)</option>
                   </select>
                 </div>
               </div>
