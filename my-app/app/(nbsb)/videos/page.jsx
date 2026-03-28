@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { getCldImageUrl } from "next-cloudinary";
+import Loader from "@/component/Loader";
 
 function Dashboard() {
   const router = useRouter();
@@ -180,7 +181,7 @@ function Dashboard() {
 
         {/* inf scroll observer div */}
         <div ref={loaderRef} className="text-center p-4">
-          {loading && <p>Loading...</p>}
+          {loading && <Loader />}
         </div>
 
         {videoDeletedSuccessfully && (

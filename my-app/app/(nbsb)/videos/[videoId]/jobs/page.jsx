@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
+import Loader from "@/component/Loader";
 
 function Jobs({ params }) {
   const router = useRouter();
@@ -226,7 +227,7 @@ function Jobs({ params }) {
 
         {/* inf scrolling observer ref */}
         <div ref={loaderRef} className="text-center p-4">
-          {loading && <p>Loading... </p>}
+          {loading && <Loader/>}
         </div>
 
         {/* New job CTA */}
