@@ -66,10 +66,10 @@ export async function DELETE(req, { params }) {
       );
     }
 
-    // delete video from cloudinary
-
-    //TODO: remove this comment
-    await deleteVideoCloudinary(job.public_id);
+    // delete video from cloudinaryt
+    if (job?.public_id) {
+      await deleteVideoCloudinary(job.public_id);
+    }
 
     // delete from db
     await Job.findByIdAndDelete(job._id);

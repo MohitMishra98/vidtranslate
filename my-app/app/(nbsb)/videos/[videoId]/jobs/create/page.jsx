@@ -2,13 +2,9 @@
 
 import axios from "axios";
 import {
-  Brain,
-  ChevronRight,
   Film,
-  Gauge,
   Languages,
   Mic2,
-  ScanFace,
   SlidersHorizontal,
   Sparkles,
 } from "lucide-react";
@@ -73,15 +69,6 @@ function CreateJob({ params }) {
         {/* Page header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-              <a className="hover:text-[#00F0FF] transition-colors" href="#">
-                Translation Jobs
-              </a>
-              <ChevronRight className="h-4 w-4 text-slate-400" />
-              <span className="text-slate-800 dark:text-slate-200 font-medium">
-                New Job
-              </span>
-            </div>
             <h1 className="text-3xl font-bold tracking-tight">
               Initiate New Translation
             </h1>
@@ -137,6 +124,7 @@ function CreateJob({ params }) {
                       }}
                       className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                     >
+                      <option>Select source language</option>
                       <option>English (US)</option>
                       <option>Spanish (ES)</option>
                       <option>French (FR)</option>
@@ -167,6 +155,7 @@ function CreateJob({ params }) {
                       }}
                       className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-200 focus:ring-2 focus:ring-[#FF46A2]/40 focus:border-[#FF46A2] transition-all cursor-pointer"
                     >
+                      <option>Select a target language</option>
                       <option>English (US)</option>
                       <option>Spanish (ES)</option>
                       <option>French (FR)</option>
@@ -182,83 +171,11 @@ function CreateJob({ params }) {
                   </div>
                 </div>
               </div>
-
-              {/* Model selection */}
-              <div className="pt-4 border-t border-white/10">
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">
-                  Translation Model
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-white/10 cursor-pointer hover:border-[#FF46A2]/50 transition-all bg-slate-900/40">
-                    <input
-                      className="sr-only peer"
-                      name="model"
-                      type="radio"
-                      value="standard"
-                    />
-                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-[#FF46A2] peer-checked:bg-[#FF46A2] transition-colors"></span>
-                    <Gauge className="h-6 w-6 text-slate-400 mb-2 peer-checked:text-[#FF46A2]" />
-                    <span className="font-semibold text-sm">Standard</span>
-                    <span className="text-xs text-slate-500 mt-1">
-                      Fast processing, good accuracy
-                    </span>
-                  </label>
-
-                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-[#FF46A2] cursor-pointer bg-[#FF46A2]/10 transition-all">
-                    <input
-                      checked=""
-                      className="sr-only peer"
-                      name="model"
-                      type="radio"
-                      value="pro"
-                    />
-                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-[#FF46A2] peer-checked:bg-[#FF46A2] transition-colors"></span>
-                    <Brain className="h-6 w-6 text-[#FF46A2] mb-2" />
-                    <span className="font-semibold text-sm">Pro Neural</span>
-                    <span className="text-xs text-slate-500 mt-1">
-                      Highest accuracy, context aware
-                    </span>
-                  </label>
-
-                  <label className="relative flex flex-col p-4 rounded-xl border-2 border-white/10 cursor-pointer hover:border-[#FF46A2]/50 transition-all bg-slate-900/40">
-                    <input
-                      className="sr-only peer"
-                      name="model"
-                      type="radio"
-                      value="lip"
-                    />
-                    <span className="absolute top-4 right-4 w-4 h-4 rounded-full border border-slate-400 peer-checked:border-[#FF46A2] peer-checked:bg-[#FF46A2] transition-colors"></span>
-                    <ScanFace className="h-6 w-6 text-slate-400 mb-2 peer-checked:text-[#FF46A2]" />
-                    <span className="font-semibold text-sm">Lip Sync</span>
-                    <span className="text-xs text-slate-500 mt-1">
-                      Matches lip movement (Beta)
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Optional voice cloning */}
-              <div>
-                <label className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors">
-                  <div className="relative inline-flex items-center cursor-pointer">
-                    <input className="sr-only peer" type="checkbox" value="" />
-                    <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF46A2]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#FF46A2]"></div>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                      Clone Speaker Voice
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      Use AI to replicate the original speaker&apos;s tone
-                    </span>
-                  </div>
-                </label>
-              </div>
             </div>
 
             <button
               onClick={onSubmitHandler}
-              className="w-full mt-4 bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40 hover:-translate-y-0.5"
+              className="w-full mt-8 bg-linear-to-r from-[#FF46A2] to-[#EE4B2B] text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF46A2]/25 hover:shadow-[#FF46A2]/40 hover:-translate-y-0.5"
             >
               <Sparkles className="h-5 w-5" />
               Start Translation

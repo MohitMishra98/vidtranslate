@@ -18,32 +18,32 @@ import {
   AudioLines,
 } from "lucide-react";
 
-import Link from "next/link"
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useHandleSignUp from "@/component/useHandleSignUp";
-import useHandleSignIn from "@/component/useHandleSignIn"
+import useHandleSignIn from "@/component/useHandleSignIn";
 
 // --- Sub-components ---
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const handleSignUpClick = useHandleSignUp();
-  const handleSignInClick = useHandleSignIn()
-  const router = useRouter()
+  const handleSignInClick = useHandleSignIn();
+  const router = useRouter();
 
   return (
     <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-md bg-slate-950/80 border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href="/">
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFFF00] to-[#FF46A2] flex items-center justify-center shadow-[0_0_15px_rgba(255,70,162,0.4)] group-hover:shadow-[0_0_25px_rgba(255,255,0,0.6)] transition-all duration-300">
-              <AudioLines className="text-slate-950 w-6 h-6" />
+            <div className="flex items-center gap-2 cursor-pointer group">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFFF00] to-[#FF46A2] flex items-center justify-center shadow-[0_0_15px_rgba(255,70,162,0.4)] group-hover:shadow-[0_0_25px_rgba(255,255,0,0.6)] transition-all duration-300">
+                <AudioLines className="text-slate-950 w-6 h-6" />
+              </div>
+              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+                VoxShift<span className="text-[#FF46A2]">.ai</span>
+              </span>
             </div>
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-              VoxShift<span className="text-[#FF46A2]">.ai</span>
-            </span>
-          </div>
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -65,7 +65,10 @@ const Navbar = () => {
             >
               Pricing
             </a>
-            <button onClick={handleSignInClick} className="text-slate-300 hover:text-white font-medium text-sm transition-colors">
+            <button
+              onClick={handleSignInClick}
+              className="text-slate-300 hover:text-white font-medium text-sm transition-colors"
+            >
               Log In
             </button>
             <button
@@ -116,7 +119,10 @@ const Navbar = () => {
             <button className="w-full text-center text-slate-300 hover:text-white font-medium py-2">
               Log In
             </button>
-            <button onClick={handleSignUpClick} className="w-full bg-white text-slate-950 px-5 py-3 rounded-xl font-semibold hover:bg-slate-200 transition-colors">
+            <button
+              onClick={handleSignUpClick}
+              className="w-full bg-white text-slate-950 px-5 py-3 rounded-xl font-semibold hover:bg-slate-200 transition-colors"
+            >
               Start Free Trial
             </button>
           </div>
@@ -127,8 +133,8 @@ const Navbar = () => {
 };
 
 const Hero = () => {
-  const router = useRouter()
-  const handleSignUpClick = useHandleSignUp()
+  const router = useRouter();
+  const handleSignUpClick = useHandleSignUp();
   return (
     <div className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
       {/* Background glowing effects */}
@@ -156,7 +162,10 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button onClick={handleSignUpClick} className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#FF46A2] to-[#EE4B2B] hover:opacity-90 text-white rounded-full font-semibold text-lg transition-all shadow-[0_0_30px_rgba(255,70,162,0.4)] hover:shadow-[0_0_40px_rgba(255,70,162,0.6)] flex items-center justify-center gap-2">
+            <button
+              onClick={handleSignUpClick}
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#FF46A2] to-[#EE4B2B] hover:opacity-90 text-white rounded-full font-semibold text-lg transition-all shadow-[0_0_30px_rgba(255,70,162,0.4)] hover:shadow-[0_0_40px_rgba(255,70,162,0.6)] flex items-center justify-center gap-2"
+            >
               Translate a Video Free
               <ArrowRight className="w-5 h-5" />
             </button>
@@ -444,7 +453,9 @@ const InteractiveDemo = () => {
                     key={i}
                     className="w-1.5 bg-[#FF46A2] rounded-full animate-pulse"
                     style={{
-                      height: activeLang ? `${Math.random() * 100}%` : "20%",
+                      height: activeLang
+                        ? `${[32, 85, 45, 90, 50][i - 1]}%`
+                        : "20%",
                       animationDelay: `${i * 0.1}s`,
                       animationDuration: "0.5s",
                     }}
@@ -658,7 +669,7 @@ const Pricing = () => {
 };
 
 const CTA = () => {
-    const handleSignUpClick = useHandleSignUp()
+  const handleSignUpClick = useHandleSignUp();
   return (
     <div className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-[#EE4B2B]"></div>
@@ -676,7 +687,10 @@ const CTA = () => {
           Join 10,000+ creators and brands who are expanding their audience
           globally with VoxShift.
         </p>
-        <button onClick={handleSignUpClick} className="px-8 py-4 bg-[#FFFF00] text-slate-900 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl inline-flex items-center gap-2">
+        <button
+          onClick={handleSignUpClick}
+          className="px-8 py-4 bg-[#FFFF00] text-slate-900 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl inline-flex items-center gap-2"
+        >
           Translate Your First Video Free
           <ChevronRight className="w-5 h-5" />
         </button>
