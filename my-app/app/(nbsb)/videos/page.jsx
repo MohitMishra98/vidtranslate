@@ -69,7 +69,13 @@ function Dashboard() {
 
       const response = videoResponse.data.data; // array of videos
 
-      setVideos((prev) => [...prev, ...response]);
+      // when there are 2 network calls the videos appears twice
+      // we filter those by unique ids
+      setVideos((prev) => {
+        const existingIds = new Set(prev.map((v) => v._id));
+        const newVideos = response.filter((v) => !existingIds.has(v._id));
+        return [...prev, ...newVideos];
+      });
 
       if (response.length === 0) {
         setHasMore(false);

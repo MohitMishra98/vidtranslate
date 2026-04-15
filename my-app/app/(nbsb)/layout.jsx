@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  Clapperboard,
-  Play,
-  Languages,
-} from "lucide-react";
+import { Play, Languages, AudioLines } from "lucide-react";
 
 import Link from "next/link";
 import { useUser, UserButton } from "@clerk/nextjs";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import ThemeButton from "@/component/ThemeButton";
 
 function NavBarAndSideBar({ children }) {
@@ -47,12 +41,12 @@ function Sidebar() {
       <aside className="w-64 shrink-0 border-r border-slate-200 dark:border-white/10 hidden md:flex flex-col bg-white/80 dark:bg-slate-950/80">
         {/* Logo section */}
         <Link href={"/"}>
-          <div className="p-6 flex items-center gap-3">
-            <div className="w-10 h-10 bg-linear-to-br from-[#FFFF00] to-[#FF46A2] rounded-xl flex items-center justify-center shadow-lg shadow-[#FF46A2]/30">
-              <Clapperboard className="text-slate-950" />
+          <div className="p-6 flex items-center gap-2 cursor-pointer group">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFFF00] to-[#FF46A2] flex items-center justify-center shadow-[0_0_15px_rgba(255,70,162,0.4)] group-hover:shadow-[0_0_25px_rgba(255,255,0,0.6)] transition-all duration-300">
+              <AudioLines className="text-slate-950 w-6 h-6" />
             </div>
-            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-[#00F0FF] via-[#FF46A2] to-[#FFFF00]">
-              VidTranslate
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+              VoxShift<span className="text-[#FF46A2]">.ai</span>
             </span>
           </div>
         </Link>
@@ -67,10 +61,10 @@ function Sidebar() {
           </Link>
           <Link
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
-            href="/jobs"
+            href="/coming soon"
           >
             <Languages className="stroke-[var(--color-primary)] dark:stroke-[#00F0FF]" />
-            More if want
+            coming soon
           </Link>
         </nav>
       </aside>

@@ -51,7 +51,13 @@ function Jobs({ params }) {
 
       const jobsArray = response.data.data;
 
-      setJobs((prev) => [...prev, ...jobsArray]);
+      // when there are 2 network calls the jobs appears twice
+      // we filter those by unique ids
+      setJobs((prev) => {
+        const existingIds = new Set(prev.map((job) => job._id));
+        const newJobs = jobsArray.filter((job) => !existingIds.has(job._id));
+        return [...prev, ...newJobs];
+      });
 
       if (jobsArray.length === 0) {
         setHasMore(false);
@@ -134,7 +140,7 @@ function Jobs({ params }) {
   useEffect(() => {
     // get initial data
     getJobs();
-  }, [page]);
+  }, [page,]);
 
   function getRelativeTime(dateString) {
     const givenDate = new Date(dateString);
@@ -227,7 +233,7 @@ function Jobs({ params }) {
 
         {/* inf scrolling observer ref */}
         <div ref={loaderRef} className="text-center p-4">
-          {loading && <Loader/>}
+          {loading && <Loader />}
         </div>
 
         {/* New job CTA */}
